@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import federation from "@originjs/vite-plugin-federation";
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
-export default defineConfig(() => {
-  //const env = loadEnv(config.mode, process.cwd(), '')
+export default defineConfig((config) => {
+  const env = loadEnv(config.mode, process.cwd(), '')
 
   return {
   plugins: [
@@ -14,10 +14,10 @@ export default defineConfig(() => {
     federation({
       name: "host-app",
       // remotes: {
-      //     task_components: "http://localhost:4173/assets/task-components-entry.js",
+      //     task_components: new URL("assets/task-components-entry.js", env.VITE_REMOTE_TASKAPPREACT_URL).href
       // },
       remotes: {
-          task_app: "http://localhost:4173/assets/task-app-entry.js",
+          task_app: new URL("assets/task-app-entry.js", env.VITE_REMOTE_TASKAPPREACT_URL).href
       },
       shared: ["react", "react-dom", "react-redux", "@reduxjs/toolkit"],
     }),
@@ -25,7 +25,7 @@ export default defineConfig(() => {
   build: {
     modulePreload: false,
     target: "esnext",
-    assetsDir: "assets",
+    //assetsDir: "assets",
     minify: false,
     cssCodeSplit: false,
   },
