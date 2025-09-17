@@ -1,0 +1,10 @@
+import{f as S}from"./index-DhvbgntC.js";import{j as e}from"./jsx-runtime-D_zvdyIk.js";import{r as B}from"./index-DmM0KDA7.js";import{B as c}from"./index-CJ6b_Vmt.js";import"./clsx-B-dksMZM.js";const V="_container_183lk_1",q="_text_183lk_6",p={container:V,text:q};function j({initialValue:i=0,step:m=1,min:u=-1/0,max:l=1/0}){const[a,n]=B.useState(i),M=()=>{n(o=>Math.min(o+m,l))},k=()=>{n(o=>Math.max(o-m,u))},I=()=>{n(i)};return e.jsxs("section",{className:p.container,children:[e.jsxs("p",{className:p.text,children:["Count: ",a]}),e.jsx(c,{label:"Increment",onClick:M,disabled:a>=l}),e.jsx(c,{label:"Decrement",onClick:k,disabled:a<=u}),e.jsx(c,{label:"Reset",onClick:I,primary:!0})]})}j.__docgenInfo={description:"",methods:[],displayName:"BrandCounter",props:{initialValue:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"0",computed:!1}},step:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"1",computed:!1}},min:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"-Infinity",computed:!1}},max:{required:!1,tsType:{name:"number"},description:"",defaultValue:{value:"Infinity",computed:!0}}}};const R={title:"Components/MyCounter",component:j,parameters:{layout:"centered"},tags:["autodocs"],args:{initialValue:0,step:1,onClick:S()}},t={},r={args:{min:0,max:10}},s={args:{step:5}};var d,f,x;t.parameters={...t.parameters,docs:{...(d=t.parameters)==null?void 0:d.docs,source:{originalSource:"{}",...(x=(f=t.parameters)==null?void 0:f.docs)==null?void 0:x.source}}};var y,C,g;r.parameters={...r.parameters,docs:{...(y=r.parameters)==null?void 0:y.docs,source:{originalSource:`{
+  args: {
+    min: 0,
+    max: 10
+  }
+}`,...(g=(C=r.parameters)==null?void 0:C.docs)==null?void 0:g.source}}};var _,b,h;s.parameters={...s.parameters,docs:{...(_=s.parameters)==null?void 0:_.docs,source:{originalSource:`{
+  args: {
+    step: 5
+  }
+}`,...(h=(b=s.parameters)==null?void 0:b.docs)==null?void 0:h.source}}};const W=["Default","WithMinMax","CustomStep"];export{s as CustomStep,t as Default,r as WithMinMax,W as __namedExportsOrder,R as default};

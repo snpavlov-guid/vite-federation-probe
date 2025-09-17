@@ -1,0 +1,28 @@
+.app-wrapper {
+    min-height: 100%;
+    position: relative;
+}
+
+.app-layout {
+    --padding-bottom: 80px !important;
+    min-height: 100vh;
+}
+
+.app-header {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-bottom: 1px solid var(--border-bk-color);
+}
+
+.app-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+

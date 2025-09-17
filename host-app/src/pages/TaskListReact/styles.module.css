@@ -1,0 +1,6 @@
+.task-list {
+    display: flex;
+    place-content: center;
+    flex-wrap: wrap;
+    padding: 2em 0;
+}

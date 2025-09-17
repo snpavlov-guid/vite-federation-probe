@@ -1,0 +1,75 @@
+.input-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 500px;
+  margin-bottom : 0.5em;
+}
+
+.input-form__group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-form__input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  outline: none;
+}
+
+.input-form__input:focus {
+  border-color: #2196f3;
+}
+
+.input-form__input--error {
+  border-color: #f44336;
+}
+
+.input-form__input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.input-form__error {
+  color: #f44336;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.input-form__button {
+  padding: 12px 24px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.input-form__button:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+
+.input-form__button:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 600px) {
+  .input-form {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .input-form__button {
+    width: 100%;
+  }
+}

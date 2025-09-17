@@ -1,0 +1,38 @@
+.app-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-grow: 1;
+    flex-wrap:wrap;
+    padding: 5px 10px;
+    --padding-left: 5vw;
+}
+
+.app-menu > a {
+    flex-basis:auto;
+    min-width: 10%;
+}
+
+.app-menu a {
+    color: var(--link-color);
+    letter-spacing: 0.5px;
+    padding: 5px 10px;
+    font-size: 1.2em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-menu a:hover {
+    color: var(--link-color-hover);
+    text-decoration:underline;
+}
+
+.app-menu a:active {
+    color: var(--brand-color);
+    text-decoration:underline;
+}
+
+.app-menu a.active {
+    color: var(--brand-color);
+    text-decoration:underline;
+}

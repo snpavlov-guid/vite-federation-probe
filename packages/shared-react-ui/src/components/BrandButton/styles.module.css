@@ -1,0 +1,55 @@
+.button {
+  --bg-color: none;
+
+  padding: 12px 24px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.button--primary {
+  --bg-color: crimson;
+
+  backdrop-filter: sepia(90%);
+}
+
+.button--secondary {
+  --bg-color:  #2196f3;
+
+  backdrop-filter: sepia(90%);
+}
+
+.button--primary:hover:not(:disabled) {
+  background-color:  rgb(183, 18, 51);
+}
+
+.button--secondary:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+
+.button:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button--small {
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.button--medium {
+  font-size: 1.1rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.button--large {
+  font-size: 1.2rem;
+  padding: 0.8rem 1rem;
+}
