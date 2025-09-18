@@ -13,13 +13,14 @@ export default defineConfig((config) => {
     tsconfigPaths(),
     federation({
       name: "host-app",
-      // remotes: {
-      //     task_components: new URL("assets/task-components-entry.js", env.VITE_REMOTE_TASKAPPREACT_URL).href
-      // },
       remotes: {
-          task_app: new URL("assets/task-app-entry.js", env.VITE_REMOTE_TASKAPPREACT_URL).href
+          task_app: new URL("assets/task-app-entry.js", env.VITE_REMOTE_TASKAPPREACT_URL).href,
+          vue_task_app: new URL("assets/vue-task-app-entry.js", env.VITE_REMOTE_TASKAPPVUE_URL).href
       },
-      shared: ["react", "react-dom", "react-redux", "@reduxjs/toolkit"],
+      shared: [
+        "react", "react-dom", "react-redux", "@reduxjs/toolkit",
+
+      ],
     }),
   ],
   build: {
