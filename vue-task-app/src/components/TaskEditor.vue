@@ -248,6 +248,7 @@
   color: #4caf50;
   font-weight: bold;
   width: 48px;
+  text-align: center;
 }
 
 </style>

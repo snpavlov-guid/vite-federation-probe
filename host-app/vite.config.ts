@@ -19,7 +19,7 @@ export default defineConfig((config) => {
       },
       shared: [
         "react", "react-dom", "react-redux", "@reduxjs/toolkit",
-
+        "vue"
       ],
     }),
   ],
