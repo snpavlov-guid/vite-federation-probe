@@ -11,7 +11,6 @@
 
 .app-menu > a {
     flex-basis:auto;
-    min-width: 10%;
 }
 
 .app-menu a {

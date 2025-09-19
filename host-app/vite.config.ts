@@ -15,7 +15,8 @@ export default defineConfig((config) => {
       name: "host-app",
       remotes: {
           task_app: new URL("assets/task-app-entry.js", env.VITE_REMOTE_TASKAPPREACT_URL).href,
-          vue_task_app: new URL("assets/vue-task-app-entry.js", env.VITE_REMOTE_TASKAPPVUE_URL).href
+          vue_task_app: new URL("assets/vue-task-app-entry.js", env.VITE_REMOTE_TASKAPPVUE_URL).href,
+          solid_task_app: new URL("assets/solid-task-app-entry.js", env.VITE_REMOTE_TASKAPPSOLID_URL).href
       },
       shared: [
         "react", "react-dom", "react-redux", "@reduxjs/toolkit",

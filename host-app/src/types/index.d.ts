@@ -11,3 +11,13 @@ declare module 'vue_task_app/VueTaskApp' {
   const VueTaskApp: Component;
   export default VueTaskApp;
 }
+
+// types/remote.d.ts
+declare module 'solid_task_app/SolidTaskApp' {
+  const SolidTaskApp: React.ComponentType;
+  export default SolidTaskApp;
+}
+
+declare interface ErrorBoundaryError {
+  message : string;
+}

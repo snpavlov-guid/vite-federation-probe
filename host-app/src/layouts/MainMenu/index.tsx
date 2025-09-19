@@ -29,6 +29,7 @@ export const MainMenu: React.FC<TopMenuProps> = ({
 
      const items = useMemo(
         () => [
+            createmenuItem('Главная', '/', { location, navigate }),
             createmenuItem('Приложение React', '/tasklistreact', { location, navigate }),
             createmenuItem('Приложение Vue', '/tasklistvue', { location, navigate }),
             createmenuItem('Приложение Solid', '/tasklistsolid', { location, navigate }),
@@ -47,40 +48,4 @@ export const MainMenu: React.FC<TopMenuProps> = ({
         </nav>
     );
 };
-
-
-// import { HeaderMenu } from 'uikit';
-
-// import { useMemo } from 'react';
-// import type { NavigateFunction, Location } from 'react-router-dom';
-// import { useNavigate, useLocation, matchPath } from 'react-router-dom';
-
-// const createmenuItem = (
-//     label: string,
-//     path: string,
-//     { location, navigate }: { location: Location; navigate: NavigateFunction },
-// ) => ({
-//     label,
-//     onClick: () => {
-//         navigate(path);
-//     },
-//     active: !!matchPath(`${path}/*`, location.pathname),
-// });
-
-// export function MainMenu() {
-//     const navigate = useNavigate();
-//     const location = useLocation();
-
-//     const items = useMemo(
-//         () => [
-//             createmenuItem('Проекты', '/projects', { location, navigate }),
-//             createmenuItem('Справочники', '/catalogs', { location, navigate }),
-//         ],
-//         [navigate, location],
-//     );
-
-//     return <HeaderMenu items={items} />;
-// }
-
-// MainMenu.displayName = 'MainMenu';
 
