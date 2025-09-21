@@ -7,9 +7,11 @@ declare module 'task_app/TaskApp' {
 
 // types/vue-federation.d.ts
 declare module 'vue_task_app/VueTaskApp' {
-  import { Component } from 'vue';
-  const VueTaskApp: Component;
-  export default VueTaskApp;
+  // import { Component } from 'vue';
+  // const VueTaskApp: Component;
+  // export default VueTaskApp;
+
+  export default function VueTaskApp();
 }
 
 // types/remote.d.ts
