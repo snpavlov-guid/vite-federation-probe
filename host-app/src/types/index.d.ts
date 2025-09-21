@@ -20,6 +20,6 @@ declare module 'solid_task_app/SolidTaskApp' {
   export default SolidTaskApp;
 }
 
-declare interface ErrorBoundaryError {
-  message : string;
+declare module 'react-solid-bridge' {
+  export function convertToReactComponent(component : any);
 }
