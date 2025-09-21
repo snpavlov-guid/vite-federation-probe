@@ -24,7 +24,7 @@ export const ComponentLoader: React.FC<IComponentLoaderProps> = ({
 }) => {
 
     function errorFallback({ error , resetErrorBoundary } : 
-        {error : ErrorBoundaryError , resetErrorBoundary : any}) {
+        {error : Error , resetErrorBoundary : any}) {
         return (
             <div role="alert">
                 <p>{loadErrorMsg}:</p>
