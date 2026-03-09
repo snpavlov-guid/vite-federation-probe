@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
+    "ag-grid-community": "^35.1.0",
+    "ag-grid-react": "^35.1.0",
     "keycloak-js": "^26.2.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

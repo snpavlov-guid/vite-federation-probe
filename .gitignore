@@ -32,6 +32,7 @@ yarn-error.log*
 .vs
 .vscode
 .npmrc
+.cursor
 
 
 # User-specific files

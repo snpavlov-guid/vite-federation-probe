@@ -1,0 +1,112 @@
+.listRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.errorText {
+  margin: 0;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
+
+.gridShell {
+  flex: 1;
+  min-height: 0;
+  --ag-borders: none;
+  --ag-borders-row: none;
+  --ag-row-border-style: none;
+  --ag-row-border-width: 1px;
+  --ag-row-border-color: transparent;
+}
+
+.gridShell :global(.ag-row),
+.gridShell :global(.ag-row.ag-row-last) {
+  border-bottom: none !important;
+}
+
+.gridShell :global(.ag-row-selected) {
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, #000 28%, transparent);
+}
+
+.chevronButton {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, #000 68%, transparent);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.chevronIcon {
+  display: inline-block;
+  font-size: 26px;
+  font-weight: 600;
+  transform: translateY(-1px);
+  transition: transform 120ms ease;
+}
+
+.chevronIconExpanded {
+  transform: translateY(-1px) rotate(90deg);
+}
+
+.seasonCellLayout {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: start;
+  column-gap: 6px;
+}
+
+.stageList {
+  display: grid;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.stageListItem {
+  display: inline-block;
+  padding-left: 0.25rem;
+  line-height: 1.25;
+}
+
+.seasonContent {
+  display: grid;
+  align-content: start;
+}
+
+.seasonCellHost :global(.ag-cell-wrapper),
+.seasonCellHost :global(.ag-cell-value) {
+  white-space: normal !important;
+  overflow: visible !important;
+  align-items: flex-start;
+}
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  border: 1px solid color-mix(in srgb, #000 25%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, #fff 85%, transparent);
+  color: inherit;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.paginationButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.paginationInfo {
+  font-size: 0.875rem;
+}
+

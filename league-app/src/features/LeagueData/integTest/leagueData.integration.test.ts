@@ -14,17 +14,17 @@ vi.mock('../../Auth', () => ({
 }));
 
 type LeagueDataSliceModule = {
-  fetchRplTournaments: typeof import('../model/leagueDataSlice').fetchRplTournaments;
+  fetchRplTournamentsPage: typeof import('../model/leagueDataSlice').fetchRplTournamentsPage;
   leagueDataReducer: typeof import('../model/leagueDataSlice').leagueDataReducer;
 };
 
-let fetchRplTournaments: LeagueDataSliceModule['fetchRplTournaments'];
+let fetchRplTournamentsPage: LeagueDataSliceModule['fetchRplTournamentsPage'];
 let leagueDataReducer: LeagueDataSliceModule['leagueDataReducer'];
 
 describe('LeagueData backend integration', () => {
   beforeAll(async () => {
     const module = (await import('../model/leagueDataSlice')) as LeagueDataSliceModule;
-    fetchRplTournaments = module.fetchRplTournaments;
+    fetchRplTournamentsPage = module.fetchRplTournamentsPage;
     leagueDataReducer = module.leagueDataReducer;
   });
 
@@ -35,7 +35,7 @@ describe('LeagueData backend integration', () => {
     keycloakMock.updateToken.mockImplementation(async () => true);
   });
 
-  it('fetches tournaments/rpl via real backend and updates Redux state', async () => {
+  it('fetches tournaments/rpl page via real backend and updates Redux state', async () => {
     const token = await getAccessTokenFromTestAuth();
     keycloakMock.token = token;
 
@@ -47,14 +47,16 @@ describe('LeagueData backend integration', () => {
 
     expect(store.getState().leagueData.status).toBe('idle');
 
-    const action = await store.dispatch(fetchRplTournaments());
+    const action = await store.dispatch(fetchRplTournamentsPage({ skip: 0, size: 10 }));
     unsubscribe();
 
-    expect(fetchRplTournaments.fulfilled.match(action)).toBe(true);
+    expect(fetchRplTournamentsPage.fulfilled.match(action)).toBe(true);
     expect(statuses).toContain('loading');
     expect(store.getState().leagueData.status).toBe('succeeded');
     expect(store.getState().leagueData.error).toBeNull();
     expect(store.getState().leagueData.data).not.toBeNull();
+    expect(store.getState().leagueData.data?.items).toBeInstanceOf(Array);
+    expect(typeof store.getState().leagueData.data?.total).toBe('number');
     expect(keycloakMock.updateToken).toHaveBeenCalledWith(30);
   });
 
@@ -62,9 +64,9 @@ describe('LeagueData backend integration', () => {
     keycloakMock.authenticated = false;
 
     const store = createIntegrationStore({ leagueData: leagueDataReducer });
-    const action = await store.dispatch(fetchRplTournaments());
+    const action = await store.dispatch(fetchRplTournamentsPage({ skip: 0, size: 10 }));
 
-    expect(fetchRplTournaments.rejected.match(action)).toBe(true);
+    expect(fetchRplTournamentsPage.rejected.match(action)).toBe(true);
     expect(store.getState().leagueData.status).toBe('failed');
     expect(store.getState().leagueData.error).toContain('User is not authenticated');
   });

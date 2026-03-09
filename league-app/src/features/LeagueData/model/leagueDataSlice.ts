@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { keycloak } from '../../Auth';
 import { leagueDataEnv } from './env';
-import type { LeagueDataState, RplTournamentsResponse } from './types';
+import type { LeagueDataState, LeagueTournamensResult } from './types';
 
 const initialState: LeagueDataState = {
   status: 'idle',
@@ -9,9 +9,21 @@ const initialState: LeagueDataState = {
   error: null,
 };
 
-const buildRplTournamentsUrl = (): string => {
+interface FetchRplTournamentsPageArgs {
+  skip: number;
+  size: number;
+}
+
+const DEFAULT_STAGE_NAME = 'Регулярный сезон';
+
+const buildRplTournamentsUrl = ({ skip, size }: FetchRplTournamentsPageArgs): string => {
   const trimmedBaseUrl = leagueDataEnv.apiUrl.replace(/\/+$/, '');
-  return `${trimmedBaseUrl}/tournaments/rpl`;
+  const queryParams = new URLSearchParams({
+    order: 'desc',
+    skip: String(skip),
+    size: String(size),
+  });
+  return `${trimmedBaseUrl}/tournaments/rpl?${queryParams.toString()}`;
 };
 
 const getBearerToken = async (): Promise<string> => {
@@ -28,14 +40,32 @@ const getBearerToken = async (): Promise<string> => {
   return keycloak.token;
 };
 
-export const fetchRplTournaments = createAsyncThunk<
-  RplTournamentsResponse,
-  void,
+const normalizeRplTournamentsResult = (payload: LeagueTournamensResult): LeagueTournamensResult => ({
+  ...payload,
+  items: payload.items.map((tournament) => ({
+    ...tournament,
+    stages: tournament.stages.map((stage) => {
+      const normalizedName =
+        typeof stage.name === 'string' && stage.name.trim().length > 0
+          ? stage.name
+          : DEFAULT_STAGE_NAME;
+
+      return {
+        ...stage,
+        name: normalizedName,
+      };
+    }),
+  })),
+});
+
+export const fetchRplTournamentsPage = createAsyncThunk<
+  LeagueTournamensResult,
+  FetchRplTournamentsPageArgs,
   { rejectValue: string }
->('leagueData/fetchRplTournaments', async (_, { rejectWithValue }) => {
+>('leagueData/fetchRplTournamentsPage', async (args, { rejectWithValue }) => {
   try {
     const token = await getBearerToken();
-    const response = await fetch(buildRplTournamentsUrl(), {
+    const response = await fetch(buildRplTournamentsUrl(args), {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -50,8 +80,8 @@ export const fetchRplTournaments = createAsyncThunk<
       );
     }
 
-    const payload = (await response.json()) as RplTournamentsResponse;
-    return payload;
+    const payload = (await response.json()) as LeagueTournamensResult;
+    return normalizeRplTournamentsResult(payload);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'Unknown error while fetching league data.';
@@ -65,15 +95,15 @@ const leagueDataSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchRplTournaments.pending, (state) => {
+      .addCase(fetchRplTournamentsPage.pending, (state) => {
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(fetchRplTournaments.fulfilled, (state, action) => {
+      .addCase(fetchRplTournamentsPage.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
       })
-      .addCase(fetchRplTournaments.rejected, (state, action) => {
+      .addCase(fetchRplTournamentsPage.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload ?? 'Failed to fetch tournaments/rpl.';
       });

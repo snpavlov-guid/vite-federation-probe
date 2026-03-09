@@ -23,6 +23,9 @@
 
 .leaguePagePanelLeft {
   background: color-mix(in srgb, #646cff 12%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .leaguePagePanelRight {
@@ -35,4 +38,13 @@
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   cursor: col-resize;
+}
+
+.leaguePagePanelTitle {
+  margin: 0;
+}
+
+.leaguePageLeftPanelContent {
+  flex: 1;
+  min-height: 0;
 }

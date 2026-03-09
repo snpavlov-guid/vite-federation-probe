@@ -1,11 +1,30 @@
 export type LeagueDataStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 
-export interface RplTournamentsResponse {
-  [key: string]: unknown;
+export interface TournamentStage {
+  id: number;
+  name: string;
+  order: number;
+  leagueId: number;
+  tournamentId: number;
+}
+
+export interface LeagueTournament {
+  id: number;
+  name: string;
+  stYear: number;
+  fnYear: number | null;
+  leagueId: number;
+  seasonLabel: string;
+  stages: TournamentStage[];
+}
+
+export interface LeagueTournamensResult {
+  items: LeagueTournament[];
+  total: number;
 }
 
 export interface LeagueDataState {
   status: LeagueDataStatus;
-  data: RplTournamentsResponse | null;
+  data: LeagueTournamensResult | null;
   error: string | null;
 }
