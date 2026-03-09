@@ -101,7 +101,16 @@ export const LeagueTournamentList: React.FC = () => {
               </span>
             </button>
             <div className={styles.seasonContent}>
-              <span>{row.seasonLabel}</span>
+              <button
+                type="button"
+                className={styles.seasonLabelButton}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  toggleTournamentExpand(row.id);
+                }}
+              >
+                {row.seasonLabel}
+              </button>
               {isExpanded && (
                 <div className={styles.stageList}>
                   {row.stages.map((stage) => (

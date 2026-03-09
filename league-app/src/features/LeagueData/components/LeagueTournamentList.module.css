@@ -78,6 +78,17 @@
   align-content: start;
 }
 
+.seasonLabelButton {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
 .seasonCellHost :global(.ag-cell-wrapper),
 .seasonCellHost :global(.ag-cell-value) {
   white-space: normal !important;
