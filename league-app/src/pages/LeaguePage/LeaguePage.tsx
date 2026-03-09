@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Pane, SplitPane } from 'react-split-pane';
 import 'react-split-pane/styles.css';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchRplTournaments,
   selectLeagueDataError,
   selectLeagueDataStatus,
   selectRplTournaments,
-} from '../features/LeagueData';
-import './LeaguePage.css';
+} from '../../features/LeagueData';
+import styles from './styles.module.css';
 
 // Интерфейс для пропсов компонента
 interface ILeaguePageProps {
@@ -30,10 +30,10 @@ export const LeaguePage: React.FC<ILeaguePageProps> = ({
   }, [dispatch, status]);
 
   return (
-    <div className={`league-page ${className}`.trim()}>
-      <SplitPane direction="horizontal" className="league-page-split">
-        <Pane minSize="200px" defaultSize="25%" maxSize="85%" className="league-page-pane">
-          <section className="league-page-panel league-page-panel--left">
+    <div className={`${styles.leaguePage} ${className}`.trim()}>
+      <SplitPane direction="horizontal" className={styles.leaguePageSplit}>
+        <Pane minSize="200px" defaultSize="25%" maxSize="85%" className={styles.leaguePagePane}>
+          <section className={`${styles.leaguePagePanel} ${styles.leaguePagePanelLeft}`}>
             Левая панель
             {status === 'loading' && <p>Загрузка данных турнира...</p>}
             {status === 'failed' && <p>Ошибка загрузки: {error ?? 'unknown'}</p>}
@@ -42,8 +42,8 @@ export const LeaguePage: React.FC<ILeaguePageProps> = ({
             )}
           </section>
         </Pane>
-        <Pane className="league-page-pane">
-          <section className="league-page-panel league-page-panel--right">
+        <Pane className={styles.leaguePagePane}>
+          <section className={`${styles.leaguePagePanel} ${styles.leaguePagePanelRight}`}>
             <div>Правая панель</div>
           </section>
         </Pane>

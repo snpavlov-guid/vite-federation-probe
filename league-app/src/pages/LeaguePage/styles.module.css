@@ -1,18 +1,18 @@
-.league-page {
+.leaguePage {
   width: 100%;
   height: 100%;
 }
 
-.league-page-split {
+.leaguePageSplit {
   width: 100%;
   height: 100%;
 }
 
-.league-page-pane {
+.leaguePagePane {
   min-width: 0;
 }
 
-.league-page-panel {
+.leaguePagePanel {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -21,15 +21,15 @@
   text-align: left;
 }
 
-.league-page-panel--left {
+.leaguePagePanelLeft {
   background: color-mix(in srgb, #646cff 12%, transparent);
 }
 
-.league-page-panel--right {
+.leaguePagePanelRight {
   background: color-mix(in srgb, #42b883 10%, transparent);
 }
 
-.league-page-split .split-pane-divider.horizontal {
+.leaguePageSplit :global(.split-pane-divider.horizontal) {
   width: 8px;
   margin: 0 -4px;
   border-left: 4px solid transparent;
