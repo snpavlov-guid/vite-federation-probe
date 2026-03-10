@@ -6,6 +6,7 @@ export interface TournamentStage {
   order: number;
   leagueId: number;
   tournamentId: number;
+  stageType?: string | number | null;
 }
 
 export interface LeagueTournament {

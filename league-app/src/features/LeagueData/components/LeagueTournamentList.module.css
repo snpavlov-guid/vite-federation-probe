@@ -40,18 +40,24 @@
   cursor: pointer;
   padding: 0;
   line-height: 1;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chevronIcon {
   display: inline-block;
   font-size: 26px;
   font-weight: 600;
-  transform: translateY(-1px);
   transition: transform 120ms ease;
+  line-height: 1;
+  position: relative;
+  top: 1px;
 }
 
 .chevronIconExpanded {
-  transform: translateY(-1px) rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .seasonCellLayout {
@@ -64,13 +70,22 @@
 .stageList {
   display: grid;
   gap: 2px;
-  margin-top: 4px;
 }
 
 .stageListItem {
   display: inline-block;
   padding-left: 0.25rem;
   line-height: 1.25;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  margin: 0;
+  text-decoration: none;
+}
+
+.stageListItem:hover {
+  text-decoration: underline;
 }
 
 .seasonContent {
@@ -87,6 +102,10 @@
   text-align: left;
   font: inherit;
   cursor: pointer;
+  min-height: 29px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
 }
 
 .seasonCellHost :global(.ag-cell-wrapper),

@@ -114,9 +114,25 @@ export const LeagueTournamentList: React.FC = () => {
               {isExpanded && (
                 <div className={styles.stageList}>
                   {row.stages.map((stage) => (
-                    <span key={stage.id} className={styles.stageListItem}>
+                    <a
+                      key={stage.id}
+                      href="#"
+                      className={styles.stageListItem}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        alert(
+                          [
+                            `leagueId: ${row.leagueId}`,
+                            `tournamentId: ${row.id}`,
+                            `stageId: ${stage.id}`,
+                            `stageType: ${String(stage.stageType ?? 'null')}`,
+                          ].join('\n'),
+                        );
+                      }}
+                    >
                       • {stage.name}
-                    </span>
+                    </a>
                   ))}
                 </div>
               )}
