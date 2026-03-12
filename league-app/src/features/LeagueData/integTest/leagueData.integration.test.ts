@@ -15,16 +15,19 @@ vi.mock('../../Auth', () => ({
 
 type LeagueDataSliceModule = {
   fetchRplTournamentsPage: typeof import('../model/leagueDataSlice').fetchRplTournamentsPage;
+  fetchStandings: typeof import('../model/leagueDataSlice').fetchStandings;
   leagueDataReducer: typeof import('../model/leagueDataSlice').leagueDataReducer;
 };
 
 let fetchRplTournamentsPage: LeagueDataSliceModule['fetchRplTournamentsPage'];
+let fetchStandings: LeagueDataSliceModule['fetchStandings'];
 let leagueDataReducer: LeagueDataSliceModule['leagueDataReducer'];
 
 describe('LeagueData backend integration', () => {
   beforeAll(async () => {
     const module = (await import('../model/leagueDataSlice')) as LeagueDataSliceModule;
     fetchRplTournamentsPage = module.fetchRplTournamentsPage;
+    fetchStandings = module.fetchStandings;
     leagueDataReducer = module.leagueDataReducer;
   });
 
@@ -69,5 +72,53 @@ describe('LeagueData backend integration', () => {
     expect(fetchRplTournamentsPage.rejected.match(action)).toBe(true);
     expect(store.getState().leagueData.status).toBe('failed');
     expect(store.getState().leagueData.error).toContain('User is not authenticated');
+  });
+
+  it('fetches standings via real backend and updates Redux state', async () => {
+    const token = await getAccessTokenFromTestAuth();
+    keycloakMock.token = token;
+
+    const store = createIntegrationStore({ leagueData: leagueDataReducer });
+    const statuses: string[] = [];
+    const unsubscribe = store.subscribe(() => {
+      statuses.push(store.getState().leagueData.standingsStatus);
+    });
+
+    expect(store.getState().leagueData.standingsStatus).toBe('idle');
+
+    const action = await store.dispatch(
+      fetchStandings({ leagueId: 1, stageId: 69, tournamentId: 44 }),
+    );
+    unsubscribe();
+
+    expect(fetchStandings.fulfilled.match(action)).toBe(true);
+    expect(statuses).toContain('loading');
+    expect(store.getState().leagueData.standingsStatus).toBe('succeeded');
+    expect(store.getState().leagueData.standingsError).toBeNull();
+    expect(store.getState().leagueData.standingsData).toBeInstanceOf(Array);
+
+    if (store.getState().leagueData.standingsData.length > 0) {
+      const firstItem = store.getState().leagueData.standingsData[0];
+      expect(typeof firstItem.place).toBe('number');
+      expect(firstItem.place).toBe(1);
+      expect(typeof firstItem.teamId).toBe('number');
+      expect(typeof firstItem.teamName).toBe('string');
+      expect(typeof firstItem.points).toBe('number');
+    }
+
+    expect(keycloakMock.updateToken).toHaveBeenCalledWith(30);
+  });
+
+  it('moves standings state to failed when keycloak is not authenticated', async () => {
+    keycloakMock.authenticated = false;
+
+    const store = createIntegrationStore({ leagueData: leagueDataReducer });
+    const action = await store.dispatch(
+      fetchStandings({ leagueId: 1, stageId: 69, tournamentId: 44 }),
+    );
+
+    expect(fetchStandings.rejected.match(action)).toBe(true);
+    expect(store.getState().leagueData.standingsStatus).toBe('failed');
+    expect(store.getState().leagueData.standingsError).toContain('User is not authenticated');
   });
 });

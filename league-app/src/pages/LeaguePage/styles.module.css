@@ -30,6 +30,9 @@
 
 .leaguePagePanelRight {
   background: color-mix(in srgb, #42b883 10%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .leaguePageSplit :global(.split-pane-divider.horizontal) {
@@ -44,7 +47,16 @@
   margin: 0;
 }
 
+.leaguePagePanelTitleAligned {
+  margin-top: calc(40px + 0.5rem);
+}
+
 .leaguePageLeftPanelContent {
+  flex: 1;
+  min-height: 0;
+}
+
+.leaguePageRightPanelContent {
   flex: 1;
   min-height: 0;
 }

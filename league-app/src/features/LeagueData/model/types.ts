@@ -24,8 +24,42 @@ export interface LeagueTournamensResult {
   total: number;
 }
 
+export interface StandingItem {
+  place: number;
+  teamId: number;
+  teamName: string;
+  teamLogo: string;
+  matches: number;
+  wins: number;
+  draw: number;
+  lost: number;
+  points: number;
+  scored: number;
+  missed: number;
+  diff: number;
+  hMatches: number;
+  hWins: number;
+  hDraw: number;
+  hLost: number;
+  hPoints: number;
+  hScored: number;
+  hMissed: number;
+  hDiff: number;
+  gMatches: number;
+  gWins: number;
+  gDraw: number;
+  gLost: number;
+  gPoints: number;
+  gScored: number;
+  gMissed: number;
+  gDiff: number;
+}
+
 export interface LeagueDataState {
   status: LeagueDataStatus;
   data: LeagueTournamensResult | null;
   error: string | null;
+  standingsStatus: LeagueDataStatus;
+  standingsData: StandingItem[];
+  standingsError: string | null;
 }

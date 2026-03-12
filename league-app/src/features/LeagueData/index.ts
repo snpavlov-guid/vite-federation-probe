@@ -1,7 +1,10 @@
-export { fetchRplTournamentsPage, leagueDataReducer } from './model/leagueDataSlice';
+export { fetchRplTournamentsPage, fetchStandings, leagueDataReducer } from './model/leagueDataSlice';
 export {
   selectLeagueDataError,
   selectLeagueDataStatus,
+  selectLeagueStandingsError,
+  selectLeagueStandingsItems,
+  selectLeagueStandingsStatus,
   selectLeagueTournamensResult,
   selectLeagueTournamentItems,
   selectLeagueTournamentTotal,
@@ -11,5 +14,6 @@ export type {
   LeagueDataStatus,
   LeagueTournament,
   LeagueTournamensResult,
+  StandingItem,
   TournamentStage,
 } from './model/types';

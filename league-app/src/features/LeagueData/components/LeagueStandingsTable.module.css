@@ -1,0 +1,57 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.errorText {
+  margin: 0;
+  color: #c0392b;
+  font-size: 0.9rem;
+}
+
+.gridShell {
+  flex: 1;
+  min-height: 0;
+  --ag-borders: none;
+  --ag-borders-row: none;
+  --ag-row-border-style: none;
+  --ag-row-border-width: 1px;
+  --ag-row-border-color: transparent;
+  --ag-selected-row-background-color: #d8efff;
+}
+
+.gridShell :global(.ag-row),
+.gridShell :global(.ag-row.ag-row-last) {
+  border-bottom: none !important;
+}
+
+.gridShell :global(.ag-row.ag-row-selected) {
+  background: #d8efff !important;
+}
+
+.gridShell :global(.ag-row.ag-row-selected .ag-cell) {
+  background: #d8efff !important;
+}
+
+.teamLogo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: 0 0 20px;
+}
+
+.teamCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 20px;
+}
+
+.teamLogoPlaceholder {
+  width: 20px;
+  text-align: center;
+  color: color-mix(in srgb, #000 36%, transparent);
+}

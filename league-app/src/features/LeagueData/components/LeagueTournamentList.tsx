@@ -19,7 +19,17 @@ const PAGE_SIZE = 50;
 const BASE_ROW_HEIGHT = 32;
 const getExpandedRowHeight = (stagesCount: number): number => Math.max(56, 30 + stagesCount * 22);
 
-export const LeagueTournamentList: React.FC = () => {
+interface LeagueTournamentListProps {
+  onStageSelect?: (payload: {
+    leagueId: number;
+    tournamentId: number;
+    stageId: number;
+    tournamentSeason: string;
+    stageName: string;
+  }) => void;
+}
+
+export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onStageSelect }) => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(selectLeagueDataStatus);
   const error = useAppSelector(selectLeagueDataError);
@@ -121,14 +131,13 @@ export const LeagueTournamentList: React.FC = () => {
                       onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
-                        alert(
-                          [
-                            `leagueId: ${row.leagueId}`,
-                            `tournamentId: ${row.id}`,
-                            `stageId: ${stage.id}`,
-                            `stageType: ${String(stage.stageType ?? 'null')}`,
-                          ].join('\n'),
-                        );
+                        onStageSelect?.({
+                          leagueId: row.leagueId,
+                          tournamentId: row.id,
+                          stageId: stage.id,
+                          tournamentSeason: row.seasonLabel,
+                          stageName: stage.name,
+                        });
                       }}
                     >
                       • {stage.name}

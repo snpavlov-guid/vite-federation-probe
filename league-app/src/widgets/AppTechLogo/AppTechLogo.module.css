@@ -1,0 +1,49 @@
+.appTechLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 36px;
+  height: 40px;
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  transition: filter 200ms ease;
+}
+
+.logoLink:hover .logo {
+  filter: drop-shadow(0 0 0.5rem #646cffaa);
+}
+
+.logoReact {
+  animation: logo-spin 20s linear infinite;
+}
+
+.logoLink:hover .logoReact {
+  filter: drop-shadow(0 0 0.5rem #61dafbaa);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
