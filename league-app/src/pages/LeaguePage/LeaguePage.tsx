@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   fetchStandings,
   selectLeagueStandingsError,
-  selectLeagueStandingsItems,
+  selectLeagueStandingsGroups,
   selectLeagueStandingsStatus,
 } from '../../features/LeagueData';
 import { LeagueStandingsTable } from '../../features/LeagueData/components/LeagueStandingsTable';
@@ -22,10 +22,12 @@ export const LeaguePage: React.FC<ILeaguePageProps> = ({
   className = '',
 }) => {
   const dispatch = useAppDispatch();
-  const standingsItems = useAppSelector(selectLeagueStandingsItems);
+  const standingsGroups = useAppSelector(selectLeagueStandingsGroups);
   const standingsStatus = useAppSelector(selectLeagueStandingsStatus);
   const standingsError = useAppSelector(selectLeagueStandingsError);
   const [selectedStageTitle, setSelectedStageTitle] = useState<string | null>(null);
+  const displayedStandingsGroups =
+    standingsGroups.length > 0 ? standingsGroups : [{ group: null, items: [] }];
 
   return (
     <div className={`${styles.leaguePage} ${className}`.trim()}>
@@ -36,9 +38,27 @@ export const LeaguePage: React.FC<ILeaguePageProps> = ({
             <h2 className={styles.leaguePagePanelTitle}>РПЛ - турниры</h2>
             <div className={styles.leaguePageLeftPanelContent}>
               <LeagueTournamentList
-                onStageSelect={({ leagueId, tournamentId, stageId, tournamentSeason, stageName }) => {
+                onStageSelect={({
+                  leagueId,
+                  tournamentId,
+                  stageId,
+                  tournamentSeason,
+                  stageName,
+                  groups,
+                  prevStageId,
+                  prevPlays,
+                }) => {
                   setSelectedStageTitle(`${tournamentSeason}. ${stageName}`);
-                  void dispatch(fetchStandings({ leagueId, stageId, tournamentId }));
+                  void dispatch(
+                    fetchStandings({
+                      leagueId,
+                      stageId,
+                      tournamentId,
+                      groups,
+                      prevStageId,
+                      prevPlays,
+                    }),
+                  );
                 }}
               />
             </div>
@@ -52,11 +72,21 @@ export const LeaguePage: React.FC<ILeaguePageProps> = ({
                   {selectedStageTitle}
                 </h2>
                 <div className={styles.leaguePageRightPanelContent}>
-                  <LeagueStandingsTable
-                    rows={standingsItems}
-                    status={standingsStatus}
-                    error={standingsError}
-                  />
+                  {displayedStandingsGroups.map((groupBlock, index) => (
+                    <section
+                      key={groupBlock.group ?? `overall-${index}`}
+                      className={styles.leaguePageStandingsGroupSection}
+                    >
+                      {groupBlock.group && (
+                        <h3 className={styles.leaguePageStandingsGroupTitle}>Группа {groupBlock.group}</h3>
+                      )}
+                      <LeagueStandingsTable
+                        rows={groupBlock.items}
+                        status={standingsStatus}
+                        error={standingsError}
+                      />
+                    </section>
+                  ))}
                 </div>
               </>
             )}

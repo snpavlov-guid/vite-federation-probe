@@ -87,7 +87,13 @@ describe('LeagueData backend integration', () => {
     expect(store.getState().leagueData.standingsStatus).toBe('idle');
 
     const action = await store.dispatch(
-      fetchStandings({ leagueId: 1, stageId: 69, tournamentId: 44 }),
+      fetchStandings({
+        leagueId: 1,
+        stageId: 69,
+        tournamentId: 44,
+        prevStageId: 1,
+        prevPlays: 'ALLPLAYS',
+      }),
     );
     unsubscribe();
 
@@ -96,9 +102,10 @@ describe('LeagueData backend integration', () => {
     expect(store.getState().leagueData.standingsStatus).toBe('succeeded');
     expect(store.getState().leagueData.standingsError).toBeNull();
     expect(store.getState().leagueData.standingsData).toBeInstanceOf(Array);
+    expect(store.getState().leagueData.standingsData[0]?.items).toBeInstanceOf(Array);
 
-    if (store.getState().leagueData.standingsData.length > 0) {
-      const firstItem = store.getState().leagueData.standingsData[0];
+    if ((store.getState().leagueData.standingsData[0]?.items.length ?? 0) > 0) {
+      const firstItem = store.getState().leagueData.standingsData[0].items[0];
       expect(typeof firstItem.place).toBe('number');
       expect(firstItem.place).toBe(1);
       expect(typeof firstItem.teamId).toBe('number');
@@ -109,13 +116,41 @@ describe('LeagueData backend integration', () => {
     expect(keycloakMock.updateToken).toHaveBeenCalledWith(30);
   });
 
+  it.each([
+    { leagueId: 1, tournamentId: 12, stageId: 22, groups: ['A', 'B'] as const },
+    { leagueId: 1, tournamentId: 32, stageId: 45, groups: ['A', 'B'] as const },
+  ])(
+    'fetches grouped standings with pair requests (leagueId=$leagueId, tournamentId=$tournamentId, stageId=$stageId)',
+    async ({ leagueId, tournamentId, stageId, groups }) => {
+      const token = await getAccessTokenFromTestAuth();
+      keycloakMock.token = token;
+
+      const store = createIntegrationStore({ leagueData: leagueDataReducer });
+      const action = await store.dispatch(
+        fetchStandings({
+          leagueId,
+          tournamentId,
+          stageId,
+          groups: [...groups],
+        }),
+      );
+
+      expect(fetchStandings.fulfilled.match(action)).toBe(true);
+      expect(store.getState().leagueData.standingsStatus).toBe('succeeded');
+      expect(store.getState().leagueData.standingsData).toHaveLength(2);
+      expect(
+        store.getState().leagueData.standingsData.map((item: { group: string | null }) => item.group),
+      ).toEqual(['A', 'B']);
+      expect(store.getState().leagueData.standingsData[0]?.items).toBeInstanceOf(Array);
+      expect(store.getState().leagueData.standingsData[1]?.items).toBeInstanceOf(Array);
+    },
+  );
+
   it('moves standings state to failed when keycloak is not authenticated', async () => {
     keycloakMock.authenticated = false;
 
     const store = createIntegrationStore({ leagueData: leagueDataReducer });
-    const action = await store.dispatch(
-      fetchStandings({ leagueId: 1, stageId: 69, tournamentId: 44 }),
-    );
+    const action = await store.dispatch(fetchStandings({ leagueId: 1, stageId: 69, tournamentId: 44 }));
 
     expect(fetchStandings.rejected.match(action)).toBe(true);
     expect(store.getState().leagueData.standingsStatus).toBe('failed');

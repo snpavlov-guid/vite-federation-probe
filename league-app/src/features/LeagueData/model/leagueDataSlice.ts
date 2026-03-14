@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { keycloak } from '../../Auth';
 import { leagueDataEnv } from './env';
-import type { LeagueDataState, LeagueTournamensResult, StandingItem } from './types';
+import type { LeagueDataState, LeagueTournamensResult, StandingItem, StandingsGroupBlock } from './types';
 
 const initialState: LeagueDataState = {
   status: 'idle',
@@ -21,6 +21,10 @@ interface FetchStandingsArgs {
   leagueId: number;
   stageId: number;
   tournamentId: number;
+  tgroup?: string | null;
+  groups?: string[] | null;
+  prevStageId?: number | null;
+  prevPlays?: string | null;
 }
 
 const DEFAULT_STAGE_NAME = 'Регулярный сезон';
@@ -35,13 +39,33 @@ const buildRplTournamentsUrl = ({ skip, size }: FetchRplTournamentsPageArgs): st
   return `${trimmedBaseUrl}/tournaments/rpl?${queryParams.toString()}`;
 };
 
-const buildStandingsUrl = ({ leagueId, stageId, tournamentId }: FetchStandingsArgs): string => {
+const buildStandingsUrl = ({
+  leagueId,
+  stageId,
+  tournamentId,
+  tgroup,
+  prevStageId,
+  prevPlays,
+}: FetchStandingsArgs): string => {
   const trimmedBaseUrl = leagueDataEnv.apiUrl.replace(/\/+$/, '');
   const queryParams = new URLSearchParams({
     leagueId: String(leagueId),
     stageId: String(stageId),
     tournamentId: String(tournamentId),
   });
+
+  if (typeof tgroup === 'string' && tgroup.trim().length > 0) {
+    queryParams.set('tgroup', tgroup.trim());
+  }
+
+  if (typeof prevStageId === 'number') {
+    queryParams.set('prevstageid', String(prevStageId));
+  }
+
+  if (typeof prevPlays === 'string' && prevPlays.trim().length > 0) {
+    queryParams.set('prevplays', prevPlays.trim());
+  }
+
   return `${trimmedBaseUrl}/standings?${queryParams.toString()}`;
 };
 
@@ -145,27 +169,54 @@ export const fetchRplTournamentsPage = createAsyncThunk<
 });
 
 export const fetchStandings = createAsyncThunk<
-  StandingItem[],
+  StandingsGroupBlock[],
   FetchStandingsArgs,
   { rejectValue: string }
 >('leagueData/fetchStandings', async (args, { rejectWithValue }) => {
   try {
     const token = await getBearerToken();
-    const response = await fetch(buildStandingsUrl(args), {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-    });
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Failed to fetch standings (${response.status}): ${errorBody || response.statusText}`);
+    const fetchGroupStandings = async (requestArgs: FetchStandingsArgs): Promise<StandingItem[]> => {
+      const response = await fetch(buildStandingsUrl(requestArgs), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Failed to fetch standings (${response.status}): ${errorBody || response.statusText}`);
+      }
+
+      const payload = (await response.json()) as unknown;
+      return normalizeStandingsResult(payload);
+    };
+
+    const rawGroups = Array.isArray(args.groups) ? args.groups : [];
+    const groups = rawGroups
+      .filter((group): group is string => typeof group === 'string' && group.trim().length > 0)
+      .map((group) => group.trim());
+
+    if (groups.length > 0) {
+      return Promise.all(
+        groups.map(async (group) => ({
+          group,
+          items: await fetchGroupStandings({ ...args, tgroup: group }),
+        })),
+      );
     }
 
-    const payload = (await response.json()) as unknown;
-    return normalizeStandingsResult(payload);
+    const normalizedSingleGroup =
+      typeof args.tgroup === 'string' && args.tgroup.trim().length > 0 ? args.tgroup.trim() : null;
+
+    return [
+      {
+        group: normalizedSingleGroup,
+        items: await fetchGroupStandings({ ...args, tgroup: normalizedSingleGroup }),
+      },
+    ];
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error while fetching standings.';
     return rejectWithValue(message);

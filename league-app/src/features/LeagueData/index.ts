@@ -3,6 +3,7 @@ export {
   selectLeagueDataError,
   selectLeagueDataStatus,
   selectLeagueStandingsError,
+  selectLeagueStandingsGroups,
   selectLeagueStandingsItems,
   selectLeagueStandingsStatus,
   selectLeagueTournamensResult,
@@ -15,5 +16,6 @@ export type {
   LeagueTournament,
   LeagueTournamensResult,
   StandingItem,
+  StandingsGroupBlock,
   TournamentStage,
 } from './model/types';

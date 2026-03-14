@@ -26,6 +26,9 @@ interface LeagueTournamentListProps {
     stageId: number;
     tournamentSeason: string;
     stageName: string;
+    groups?: string[] | null;
+    prevStageId?: number | null;
+    prevPlays?: string | null;
   }) => void;
 }
 
@@ -137,6 +140,9 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
                           stageId: stage.id,
                           tournamentSeason: row.seasonLabel,
                           stageName: stage.name,
+                          groups: stage.groups,
+                          prevStageId: stage.prevStageId ?? null,
+                          prevPlays: stage.prevPlays ?? null,
                         });
                       }}
                     >

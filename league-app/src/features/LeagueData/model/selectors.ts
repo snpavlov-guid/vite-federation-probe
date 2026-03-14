@@ -7,4 +7,6 @@ export const selectLeagueTournamentItems = (state: RootState) => state.leagueDat
 export const selectLeagueTournamentTotal = (state: RootState) => state.leagueData.data?.total ?? 0;
 export const selectLeagueStandingsStatus = (state: RootState) => state.leagueData.standingsStatus;
 export const selectLeagueStandingsError = (state: RootState) => state.leagueData.standingsError;
-export const selectLeagueStandingsItems = (state: RootState) => state.leagueData.standingsData;
+export const selectLeagueStandingsGroups = (state: RootState) => state.leagueData.standingsData;
+export const selectLeagueStandingsItems = (state: RootState) =>
+  state.leagueData.standingsData[0]?.items ?? [];

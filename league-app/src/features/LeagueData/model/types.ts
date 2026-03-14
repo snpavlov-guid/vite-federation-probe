@@ -7,6 +7,9 @@ export interface TournamentStage {
   leagueId: number;
   tournamentId: number;
   stageType?: string | number | null;
+  groups?: string[] | null;
+  prevStageId?: number | null;
+  prevPlays?: string | null;
 }
 
 export interface LeagueTournament {
@@ -55,11 +58,16 @@ export interface StandingItem {
   gDiff: number;
 }
 
+export interface StandingsGroupBlock {
+  group: string | null;
+  items: StandingItem[];
+}
+
 export interface LeagueDataState {
   status: LeagueDataStatus;
   data: LeagueTournamensResult | null;
   error: string | null;
   standingsStatus: LeagueDataStatus;
-  standingsData: StandingItem[];
+  standingsData: StandingsGroupBlock[];
   standingsError: string | null;
 }

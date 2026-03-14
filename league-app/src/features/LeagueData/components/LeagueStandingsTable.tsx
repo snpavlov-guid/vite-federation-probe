@@ -55,15 +55,29 @@ export const LeagueStandingsTable: React.FC<LeagueStandingsTableProps> = ({
       { field: 'wins', headerName: 'В', width: 72, sortable: true },
       { field: 'draw', headerName: 'Н', width: 72, sortable: true },
       { field: 'lost', headerName: 'П', width: 72, sortable: true },
-      { field: 'points', headerName: 'О', width: 76, sortable: true },
       {
         colId: 'scoredMissed',
         headerName: 'М',
-        width: 94,
+        width: 78,
         sortable: true,
+        cellStyle: { textAlign: 'center' },
         valueGetter: (params) => `${params.data?.scored ?? 0}-${params.data?.missed ?? 0}`,
       },
-      { field: 'diff', headerName: '+/-', width: 82, sortable: true },
+      {
+        field: 'diff',
+        headerName: '+/-',
+        width: 64,
+        sortable: true,
+        headerClass: styles.diffHeaderCentered,
+        cellStyle: { textAlign: 'center' },
+      },
+      {
+        field: 'points',
+        headerName: 'О',
+        width: 76,
+        sortable: true,
+        cellClass: styles.pointsCell,
+      },
     ],
     [],
   );
@@ -85,6 +99,7 @@ export const LeagueStandingsTable: React.FC<LeagueStandingsTableProps> = ({
         <AgGridReact<StandingItem>
           rowData={rows}
           columnDefs={columnDefs}
+          domLayout="autoHeight"
           rowModelType="clientSide"
           rowSelection="single"
           animateRows
