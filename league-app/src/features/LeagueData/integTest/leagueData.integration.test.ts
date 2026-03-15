@@ -16,11 +16,13 @@ vi.mock('../../Auth', () => ({
 type LeagueDataSliceModule = {
   fetchRplTournamentsPage: typeof import('../model/leagueDataSlice').fetchRplTournamentsPage;
   fetchStandings: typeof import('../model/leagueDataSlice').fetchStandings;
+  fetchTournamentMatches: typeof import('../model/leagueDataSlice').fetchTournamentMatches;
   leagueDataReducer: typeof import('../model/leagueDataSlice').leagueDataReducer;
 };
 
 let fetchRplTournamentsPage: LeagueDataSliceModule['fetchRplTournamentsPage'];
 let fetchStandings: LeagueDataSliceModule['fetchStandings'];
+let fetchTournamentMatches: LeagueDataSliceModule['fetchTournamentMatches'];
 let leagueDataReducer: LeagueDataSliceModule['leagueDataReducer'];
 
 describe('LeagueData backend integration', () => {
@@ -28,6 +30,7 @@ describe('LeagueData backend integration', () => {
     const module = (await import('../model/leagueDataSlice')) as LeagueDataSliceModule;
     fetchRplTournamentsPage = module.fetchRplTournamentsPage;
     fetchStandings = module.fetchStandings;
+    fetchTournamentMatches = module.fetchTournamentMatches;
     leagueDataReducer = module.leagueDataReducer;
   });
 
@@ -60,7 +63,7 @@ describe('LeagueData backend integration', () => {
     expect(store.getState().leagueData.data).not.toBeNull();
     expect(store.getState().leagueData.data?.items).toBeInstanceOf(Array);
     expect(typeof store.getState().leagueData.data?.total).toBe('number');
-    expect(keycloakMock.updateToken).toHaveBeenCalledWith(30);
+    expect(keycloakMock.updateToken).toHaveBeenCalledWith(300);
   });
 
   it('moves state to failed when keycloak is not authenticated', async () => {
@@ -113,7 +116,7 @@ describe('LeagueData backend integration', () => {
       expect(typeof firstItem.points).toBe('number');
     }
 
-    expect(keycloakMock.updateToken).toHaveBeenCalledWith(30);
+    expect(keycloakMock.updateToken).toHaveBeenCalledWith(300);
   });
 
   it.each([
@@ -155,5 +158,54 @@ describe('LeagueData backend integration', () => {
     expect(fetchStandings.rejected.match(action)).toBe(true);
     expect(store.getState().leagueData.standingsStatus).toBe('failed');
     expect(store.getState().leagueData.standingsError).toContain('User is not authenticated');
+  });
+
+  it('fetches tournament teams and matches via real backend and updates Redux state', async () => {
+    const token = await getAccessTokenFromTestAuth();
+    keycloakMock.token = token;
+
+    const store = createIntegrationStore({ leagueData: leagueDataReducer });
+    const statuses: string[] = [];
+    const unsubscribe = store.subscribe(() => {
+      statuses.push(store.getState().leagueData.tournamentMatchesStatus);
+    });
+
+    expect(store.getState().leagueData.tournamentMatchesStatus).toBe('idle');
+
+    const action = await store.dispatch(
+      fetchTournamentMatches({
+        leagueId: 1,
+        tournamentId: 12,
+        stageId: 22,
+        tgroup: 'A',
+      }),
+    );
+    unsubscribe();
+
+    expect(fetchTournamentMatches.fulfilled.match(action)).toBe(true);
+    expect(statuses).toContain('loading');
+    expect(store.getState().leagueData.tournamentMatchesStatus).toBe('succeeded');
+    expect(store.getState().leagueData.tournamentMatchesError).toBeNull();
+    expect(store.getState().leagueData.tournamentMatchesData).not.toBeNull();
+    expect(store.getState().leagueData.tournamentMatchesData?.teams).toBeInstanceOf(Array);
+    expect(store.getState().leagueData.tournamentMatchesData?.matches).toBeInstanceOf(Array);
+    expect(keycloakMock.updateToken).toHaveBeenCalledWith(300);
+  });
+
+  it('moves tournament matches state to failed when keycloak is not authenticated', async () => {
+    keycloakMock.authenticated = false;
+
+    const store = createIntegrationStore({ leagueData: leagueDataReducer });
+    const action = await store.dispatch(
+      fetchTournamentMatches({
+        leagueId: 1,
+        tournamentId: 12,
+        stageId: 22,
+      }),
+    );
+
+    expect(fetchTournamentMatches.rejected.match(action)).toBe(true);
+    expect(store.getState().leagueData.tournamentMatchesStatus).toBe('failed');
+    expect(store.getState().leagueData.tournamentMatchesError).toContain('User is not authenticated');
   });
 });

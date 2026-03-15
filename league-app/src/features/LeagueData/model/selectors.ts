@@ -10,3 +10,13 @@ export const selectLeagueStandingsError = (state: RootState) => state.leagueData
 export const selectLeagueStandingsGroups = (state: RootState) => state.leagueData.standingsData;
 export const selectLeagueStandingsItems = (state: RootState) =>
   state.leagueData.standingsData[0]?.items ?? [];
+export const selectLeagueTournamentMatchesStatus = (state: RootState) =>
+  state.leagueData.tournamentMatchesStatus;
+export const selectLeagueTournamentMatchesError = (state: RootState) =>
+  state.leagueData.tournamentMatchesError;
+export const selectLeagueTournamentMatchesData = (state: RootState) =>
+  state.leagueData.tournamentMatchesData;
+export const selectLeagueTournamentTeams = (state: RootState) =>
+  state.leagueData.tournamentMatchesData?.teams ?? [];
+export const selectLeagueTournamentMatches = (state: RootState) =>
+  state.leagueData.tournamentMatchesData?.matches ?? [];

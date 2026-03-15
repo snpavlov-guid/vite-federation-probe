@@ -1,0 +1,1633 @@
+---
+openapi: 3.0.3
+info:
+  title: JeuxSonde API
+  description: "REST API for football leagues, tournaments, teams, and matches."
+  contact:
+    name: JeuxSonde Team
+    email: contact@example.com
+  version: 1.0.0
+paths:
+  /api/q/v1/leagues:
+    get:
+      tags:
+      - League Resource
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: order
+        in: query
+        schema:
+          type: string
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: skip
+        in: query
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    put:
+      tags:
+      - League Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeagueUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+    post:
+      tags:
+      - League Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeagueCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/leagues/create:
+    post:
+      tags:
+      - League Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeagueCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/leagues/delete/{id}:
+    post:
+      tags:
+      - League Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/leagues/rpl:
+    get:
+      tags:
+      - League Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /api/q/v1/leagues/update/{id}:
+    post:
+      tags:
+      - League Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeagueUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/leagues/{id}:
+    get:
+      tags:
+      - League Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - League Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultLeagueDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/matches:
+    get:
+      tags:
+      - Match Resource
+      parameters:
+      - name: date
+        in: query
+        schema:
+          type: string
+      - name: gteam
+        in: query
+        schema:
+          type: string
+      - name: hteam
+        in: query
+        schema:
+          type: string
+      - name: leagueId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: order
+        in: query
+        schema:
+          type: string
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: skip
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: stageId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: tgroup
+        in: query
+        schema:
+          type: string
+      - name: tournamentId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: tours
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    put:
+      tags:
+      - Match Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+    post:
+      tags:
+      - Match Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/matches/create:
+    post:
+      tags:
+      - Match Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/matches/delete/{id}:
+    post:
+      tags:
+      - Match Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/matches/update/{id}:
+    post:
+      tags:
+      - Match Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/matches/{id}:
+    get:
+      tags:
+      - Match Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Match Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultMatchDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/ping:
+    get:
+      tags:
+      - Ping Resource
+      parameters:
+      - name: echo
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PingResponse"
+  /api/q/v1/standings:
+    get:
+      tags:
+      - Standing Resource
+      parameters:
+      - name: leagueId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: matchtype
+        in: query
+        schema:
+          $ref: "#/components/schemas/StandingMatchType"
+      - name: prevplays
+        in: query
+        schema:
+          type: string
+      - name: prevstageid
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: stageId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: tgroup
+        in: query
+        schema:
+          type: string
+      - name: tournamentId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultStandingDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /api/q/v1/teams:
+    get:
+      tags:
+      - Team Resource
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: order
+        in: query
+        schema:
+          type: string
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: skip
+        in: query
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    put:
+      tags:
+      - Team Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+    post:
+      tags:
+      - Team Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/teams/create:
+    post:
+      tags:
+      - Team Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/teams/delete/{id}:
+    post:
+      tags:
+      - Team Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/teams/update/{id}:
+    post:
+      tags:
+      - Team Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/teams/{id}:
+    get:
+      tags:
+      - Team Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Team Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/tournaments:
+    get:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: leagueId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: order
+        in: query
+        schema:
+          type: string
+      - name: season
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: skip
+        in: query
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    put:
+      tags:
+      - Tournament Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TournamentUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+    post:
+      tags:
+      - Tournament Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TournamentCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/tournaments/create:
+    post:
+      tags:
+      - Tournament Resource
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TournamentCreateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/tournaments/delete/{id}:
+    post:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/tournaments/rpl:
+    get:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: order
+        in: query
+        schema:
+          type: string
+      - name: season
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: skip
+        in: query
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+  /api/q/v1/tournaments/update/{id}:
+    post:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TournamentUpdateDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/tournaments/{id}:
+    get:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDataResultTournamentDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme:
+        - probe-owner
+        - probe-contrib
+  /api/q/v1/tournaments/{id}/teams:
+    get:
+      tags:
+      - Tournament Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      - name: stageId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: tgroup
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceListResultTeamDto"
+        "401":
+          description: Not Authorized
+        "403":
+          description: Not Allowed
+      security:
+      - SecurityScheme: []
+components:
+  schemas:
+    LeagueCreateDto:
+      type: object
+      properties:
+        name:
+          type: string
+    LeagueDto:
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+    LeagueUpdateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          format: int64
+          type: integer
+    MatchCreateDto:
+      type: object
+      properties:
+        tour:
+          format: int32
+          type: integer
+        round:
+          type: string
+        date:
+          $ref: "#/components/schemas/OffsetDateTime"
+        hScore:
+          format: int32
+          type: integer
+        gScore:
+          format: int32
+          type: integer
+        city:
+          type: string
+        stadium:
+          type: string
+        group:
+          type: string
+        leagueId:
+          format: int64
+          type: integer
+        tournamentId:
+          format: int64
+          type: integer
+        stageId:
+          format: int64
+          type: integer
+        hTeamId:
+          format: int64
+          type: integer
+        gTeamId:
+          format: int64
+          type: integer
+    MatchDto:
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        tour:
+          format: int32
+          type: integer
+        round:
+          type: string
+        date:
+          $ref: "#/components/schemas/OffsetDateTime"
+        hScore:
+          format: int32
+          type: integer
+        gScore:
+          format: int32
+          type: integer
+        city:
+          type: string
+        stadium:
+          type: string
+        group:
+          type: string
+        leagueId:
+          format: int64
+          type: integer
+        tournamentId:
+          format: int64
+          type: integer
+        stageId:
+          format: int64
+          type: integer
+        hTeamId:
+          format: int64
+          type: integer
+        gTeamId:
+          format: int64
+          type: integer
+    MatchUpdateDto:
+      type: object
+      properties:
+        tour:
+          format: int32
+          type: integer
+        round:
+          type: string
+        date:
+          $ref: "#/components/schemas/OffsetDateTime"
+        hScore:
+          format: int32
+          type: integer
+        gScore:
+          format: int32
+          type: integer
+        city:
+          type: string
+        stadium:
+          type: string
+        group:
+          type: string
+        leagueId:
+          format: int64
+          type: integer
+        tournamentId:
+          format: int64
+          type: integer
+        stageId:
+          format: int64
+          type: integer
+        hTeamId:
+          format: int64
+          type: integer
+        gTeamId:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+    PingResponse:
+      type: object
+      properties:
+        echo:
+          type: string
+        timestamp:
+          $ref: "#/components/schemas/OffsetDateTime"
+    PrevPlaysType:
+      enum:
+      - ALLPLAYS
+      - SAMETEAMS
+      type: string
+    ServiceDataResultLeagueDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        data:
+          $ref: "#/components/schemas/LeagueDto"
+    ServiceDataResultMatchDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        data:
+          $ref: "#/components/schemas/MatchDto"
+    ServiceDataResultTeamDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        data:
+          $ref: "#/components/schemas/TeamDto"
+    ServiceDataResultTournamentDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        data:
+          $ref: "#/components/schemas/TournamentDto"
+    ServiceListResultLeagueDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        total:
+          format: int32
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/LeagueDto"
+    ServiceListResultMatchDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        total:
+          format: int32
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchDto"
+    ServiceListResultStandingDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        total:
+          format: int32
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/StandingDto"
+    ServiceListResultTeamDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        total:
+          format: int32
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamDto"
+    ServiceListResultTournamentDto:
+      type: object
+      properties:
+        result:
+          type: boolean
+        message:
+          type: string
+        validations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Validation"
+        code:
+          type: string
+        total:
+          format: int32
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TournamentDto"
+    StageDto:
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+        order:
+          format: int32
+          type: integer
+        leagueId:
+          format: int64
+          type: integer
+        tournamentId:
+          format: int64
+          type: integer
+        stageType:
+          $ref: "#/components/schemas/StageType"
+        groups:
+          type: array
+          items:
+            type: string
+        prevStageId:
+          format: int64
+          type: integer
+        prevPlays:
+          $ref: "#/components/schemas/PrevPlaysType"
+    StageType:
+      enum:
+      - REGULAR
+      - EXTRAPLAY
+      - PLAYOFF
+      type: string
+    StageUpdateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        order:
+          format: int32
+          type: integer
+        leagueId:
+          format: int64
+          type: integer
+        tournamentId:
+          format: int64
+          type: integer
+        stageType:
+          $ref: "#/components/schemas/StageType"
+        groups:
+          type: array
+          items:
+            type: string
+        prevStageId:
+          format: int64
+          type: integer
+        prevPlays:
+          $ref: "#/components/schemas/PrevPlaysType"
+        id:
+          format: int64
+          type: integer
+    StandingDto:
+      type: object
+      properties:
+        teamId:
+          format: int64
+          type: integer
+        teamName:
+          type: string
+        teamLogo:
+          type: string
+        matches:
+          format: int32
+          type: integer
+        wins:
+          format: int32
+          type: integer
+        draw:
+          format: int32
+          type: integer
+        lost:
+          format: int32
+          type: integer
+        points:
+          format: int32
+          type: integer
+        scored:
+          format: int32
+          type: integer
+        missed:
+          format: int32
+          type: integer
+        diff:
+          format: int32
+          type: integer
+        hMatches:
+          format: int32
+          type: integer
+        hWins:
+          format: int32
+          type: integer
+        hDraw:
+          format: int32
+          type: integer
+        hLost:
+          format: int32
+          type: integer
+        hPoints:
+          format: int32
+          type: integer
+        hScored:
+          format: int32
+          type: integer
+        hMissed:
+          format: int32
+          type: integer
+        hDiff:
+          format: int32
+          type: integer
+        gMatches:
+          format: int32
+          type: integer
+        gWins:
+          format: int32
+          type: integer
+        gDraw:
+          format: int32
+          type: integer
+        gLost:
+          format: int32
+          type: integer
+        gPoints:
+          format: int32
+          type: integer
+        gScored:
+          format: int32
+          type: integer
+        gMissed:
+          format: int32
+          type: integer
+        gDiff:
+          format: int32
+          type: integer
+        order:
+          format: int32
+          type: integer
+        subOrder:
+          format: int32
+          type: integer
+    StandingMatchType:
+      enum:
+      - ALL
+      - HOME
+      - GUEST
+      type: string
+    TeamCreateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        shortName:
+          type: string
+        city:
+          type: string
+        logoUrl:
+          type: string
+    TeamDto:
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+        shortName:
+          type: string
+        city:
+          type: string
+        logoUrl:
+          type: string
+    TeamUpdateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        shortName:
+          type: string
+        city:
+          type: string
+        logoUrl:
+          type: string
+        id:
+          format: int64
+          type: integer
+    TournamentCreateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        stYear:
+          format: int32
+          type: integer
+        fnYear:
+          format: int32
+          type: integer
+        leagueId:
+          format: int64
+          type: integer
+        stages:
+          type: array
+          items:
+            $ref: "#/components/schemas/StageUpdateDto"
+    TournamentDto:
+      type: object
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+        stYear:
+          format: int32
+          type: integer
+        fnYear:
+          format: int32
+          type: integer
+        leagueId:
+          format: int64
+          type: integer
+        seasonLabel:
+          type: string
+        stages:
+          type: array
+          items:
+            $ref: "#/components/schemas/StageDto"
+    TournamentUpdateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        stYear:
+          format: int32
+          type: integer
+        fnYear:
+          format: int32
+          type: integer
+        leagueId:
+          format: int64
+          type: integer
+        stages:
+          type: array
+          items:
+            $ref: "#/components/schemas/StageUpdateDto"
+        id:
+          format: int64
+          type: integer
+    Validation:
+      type: object
+      properties:
+        property:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    SecurityScheme:
+      type: openIdConnect
+      description: Authentication
+      openIdConnectUrl: http://keycloak-dev:8082/realms/probe-app/.well-known/openid-configuration

@@ -1,7 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { keycloak } from '../../Auth';
 import { leagueDataEnv } from './env';
-import type { LeagueDataState, LeagueTournamensResult, StandingItem, StandingsGroupBlock } from './types';
+import type {
+  LeagueDataState,
+  LeagueTournamensResult,
+  MatchItem,
+  StandingItem,
+  StandingsGroupBlock,
+  TeamItem,
+  TournamentMatchesData,
+} from './types';
 
 const initialState: LeagueDataState = {
   status: 'idle',
@@ -10,6 +18,9 @@ const initialState: LeagueDataState = {
   standingsStatus: 'idle',
   standingsData: [],
   standingsError: null,
+  tournamentMatchesStatus: 'idle',
+  tournamentMatchesData: null,
+  tournamentMatchesError: null,
 };
 
 interface FetchRplTournamentsPageArgs {
@@ -25,6 +36,13 @@ interface FetchStandingsArgs {
   groups?: string[] | null;
   prevStageId?: number | null;
   prevPlays?: string | null;
+}
+
+interface FetchTournamentMatchesArgs {
+  leagueId: number;
+  stageId: number;
+  tournamentId: number;
+  tgroup?: string | null;
 }
 
 const DEFAULT_STAGE_NAME = 'Регулярный сезон';
@@ -69,12 +87,45 @@ const buildStandingsUrl = ({
   return `${trimmedBaseUrl}/standings?${queryParams.toString()}`;
 };
 
+const buildTournamentTeamsUrl = ({ tournamentId, stageId, tgroup }: FetchTournamentMatchesArgs): string => {
+  const trimmedBaseUrl = leagueDataEnv.apiUrl.replace(/\/+$/, '');
+  const queryParams = new URLSearchParams({
+    stageId: String(stageId),
+  });
+
+  if (typeof tgroup === 'string' && tgroup.trim().length > 0) {
+    queryParams.set('tgroup', tgroup.trim());
+  }
+
+  return `${trimmedBaseUrl}/tournaments/${tournamentId}/teams?${queryParams.toString()}`;
+};
+
+const buildTournamentMatchesUrl = ({
+  leagueId,
+  stageId,
+  tournamentId,
+  tgroup,
+}: FetchTournamentMatchesArgs): string => {
+  const trimmedBaseUrl = leagueDataEnv.apiUrl.replace(/\/+$/, '');
+  const queryParams = new URLSearchParams({
+    leagueId: String(leagueId),
+    stageId: String(stageId),
+    tournamentId: String(tournamentId),
+  });
+
+  if (typeof tgroup === 'string' && tgroup.trim().length > 0) {
+    queryParams.set('tgroup', tgroup.trim());
+  }
+
+  return `${trimmedBaseUrl}/matches?${queryParams.toString()}`;
+};
+
 const getBearerToken = async (): Promise<string> => {
   if (!keycloak.authenticated) {
     throw new Error('User is not authenticated in Keycloak.');
   }
 
-  await keycloak.updateToken(30);
+  await keycloak.updateToken(300);
 
   if (!keycloak.token?.trim()) {
     throw new Error('Keycloak token is missing.');
@@ -135,6 +186,26 @@ const normalizeStandingsResult = (payload: unknown): StandingItem[] => {
   }
 
   throw new Error('Unexpected standings response format.');
+};
+
+const normalizeListResult = <T>(payload: unknown, entityName: string): T[] => {
+  if (Array.isArray(payload)) {
+    return payload as T[];
+  }
+
+  if (payload && typeof payload === 'object') {
+    const wrapped = payload as Record<string, unknown>;
+
+    if (Array.isArray(wrapped.items)) {
+      return wrapped.items as T[];
+    }
+
+    if (Array.isArray(wrapped.data)) {
+      return wrapped.data as T[];
+    }
+  }
+
+  throw new Error(`Unexpected ${entityName} response format.`);
 };
 
 export const fetchRplTournamentsPage = createAsyncThunk<
@@ -223,6 +294,57 @@ export const fetchStandings = createAsyncThunk<
   }
 });
 
+export const fetchTournamentMatches = createAsyncThunk<
+  TournamentMatchesData,
+  FetchTournamentMatchesArgs,
+  { rejectValue: string }
+>('leagueData/fetchTournamentMatches', async (args, { rejectWithValue }) => {
+  try {
+    const token = await getBearerToken();
+    const commonHeaders = {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    };
+
+    const [teamsResponse, matchesResponse] = await Promise.all([
+      fetch(buildTournamentTeamsUrl(args), {
+        method: 'GET',
+        headers: commonHeaders,
+      }),
+      fetch(buildTournamentMatchesUrl(args), {
+        method: 'GET',
+        headers: commonHeaders,
+      }),
+    ]);
+
+    if (!teamsResponse.ok) {
+      const errorBody = await teamsResponse.text();
+      throw new Error(
+        `Failed to fetch tournament teams (${teamsResponse.status}): ${errorBody || teamsResponse.statusText}`,
+      );
+    }
+
+    if (!matchesResponse.ok) {
+      const errorBody = await matchesResponse.text();
+      throw new Error(
+        `Failed to fetch tournament matches (${matchesResponse.status}): ${errorBody || matchesResponse.statusText}`,
+      );
+    }
+
+    const teamsPayload = (await teamsResponse.json()) as unknown;
+    const matchesPayload = (await matchesResponse.json()) as unknown;
+
+    return {
+      teams: normalizeListResult<TeamItem>(teamsPayload, 'teams'),
+      matches: normalizeListResult<MatchItem>(matchesPayload, 'matches'),
+    };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : 'Unknown error while fetching tournament matches.';
+    return rejectWithValue(message);
+  }
+});
+
 const leagueDataSlice = createSlice({
   name: 'leagueData',
   initialState,
@@ -252,6 +374,18 @@ const leagueDataSlice = createSlice({
       .addCase(fetchStandings.rejected, (state, action) => {
         state.standingsStatus = 'failed';
         state.standingsError = action.payload ?? 'Failed to fetch standings.';
+      })
+      .addCase(fetchTournamentMatches.pending, (state) => {
+        state.tournamentMatchesStatus = 'loading';
+        state.tournamentMatchesError = null;
+      })
+      .addCase(fetchTournamentMatches.fulfilled, (state, action) => {
+        state.tournamentMatchesStatus = 'succeeded';
+        state.tournamentMatchesData = action.payload;
+      })
+      .addCase(fetchTournamentMatches.rejected, (state, action) => {
+        state.tournamentMatchesStatus = 'failed';
+        state.tournamentMatchesError = action.payload ?? 'Failed to fetch tournament matches.';
       });
   },
 });

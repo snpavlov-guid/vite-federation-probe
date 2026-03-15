@@ -24,6 +24,7 @@ interface LeagueTournamentListProps {
     leagueId: number;
     tournamentId: number;
     stageId: number;
+    stageType?: string | number | null;
     tournamentSeason: string;
     stageName: string;
     groups?: string[] | null;
@@ -138,6 +139,7 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
                           leagueId: row.leagueId,
                           tournamentId: row.id,
                           stageId: stage.id,
+                          stageType: stage.stageType ?? null,
                           tournamentSeason: row.seasonLabel,
                           stageName: stage.name,
                           groups: stage.groups,

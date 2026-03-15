@@ -12,6 +12,8 @@
 
 .gridShell {
   width: 100%;
+  --ag-font-size: 16px;
+  --ag-row-height: 34px;
   --ag-borders: none;
   --ag-borders-row: none;
   --ag-row-border-style: none;
@@ -50,6 +52,8 @@
   align-items: center;
   gap: 0.375rem;
   min-height: 20px;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .teamLogoPlaceholder {

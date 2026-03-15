@@ -1,4 +1,9 @@
-export { fetchRplTournamentsPage, fetchStandings, leagueDataReducer } from './model/leagueDataSlice';
+export {
+  fetchRplTournamentsPage,
+  fetchStandings,
+  fetchTournamentMatches,
+  leagueDataReducer,
+} from './model/leagueDataSlice';
 export {
   selectLeagueDataError,
   selectLeagueDataStatus,
@@ -6,6 +11,11 @@ export {
   selectLeagueStandingsGroups,
   selectLeagueStandingsItems,
   selectLeagueStandingsStatus,
+  selectLeagueTournamentMatches,
+  selectLeagueTournamentMatchesData,
+  selectLeagueTournamentMatchesError,
+  selectLeagueTournamentMatchesStatus,
+  selectLeagueTournamentTeams,
   selectLeagueTournamensResult,
   selectLeagueTournamentItems,
   selectLeagueTournamentTotal,
@@ -15,7 +25,10 @@ export type {
   LeagueDataStatus,
   LeagueTournament,
   LeagueTournamensResult,
+  MatchItem,
   StandingItem,
   StandingsGroupBlock,
+  TeamItem,
   TournamentStage,
+  TournamentMatchesData,
 } from './model/types';

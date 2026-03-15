@@ -63,6 +63,36 @@ export interface StandingsGroupBlock {
   items: StandingItem[];
 }
 
+export interface TeamItem {
+  id: number;
+  name: string;
+  shortName: string;
+  city: string;
+  logoUrl: string;
+}
+
+export interface MatchItem {
+  id: number;
+  tour: number;
+  round: string;
+  date: string;
+  hScore: number;
+  gScore: number;
+  city: string;
+  stadium: string;
+  group: string;
+  leagueId: number;
+  tournamentId: number;
+  stageId: number;
+  hTeamId: number;
+  gTeamId: number;
+}
+
+export interface TournamentMatchesData {
+  teams: TeamItem[];
+  matches: MatchItem[];
+}
+
 export interface LeagueDataState {
   status: LeagueDataStatus;
   data: LeagueTournamensResult | null;
@@ -70,4 +100,7 @@ export interface LeagueDataState {
   standingsStatus: LeagueDataStatus;
   standingsData: StandingsGroupBlock[];
   standingsError: string | null;
+  tournamentMatchesStatus: LeagueDataStatus;
+  tournamentMatchesData: TournamentMatchesData | null;
+  tournamentMatchesError: string | null;
 }
