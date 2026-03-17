@@ -15,5 +15,9 @@ export const initAuth = async (): Promise<void> => {
 
   if (!authenticated || !keycloak.token) {
     await keycloak.login();
+    return;
   }
+
+  const tokenPayload = keycloak.tokenParsed ?? { token: keycloak.token };
+  console.log('Auth token payload:', JSON.stringify(tokenPayload, null, 2));
 };

@@ -4,7 +4,10 @@ import { Provider } from 'react-redux'
 import './index.css'
 import App from './App.tsx'
 import { store } from './app/store'
+import { getAllEnv } from './app/env'
 import { initAuth } from './features/Auth'
+
+console.log('Vite env (merged with window.app.env):', JSON.stringify(getAllEnv(), null, 2))
 
 const root = createRoot(document.getElementById('root')!)
 

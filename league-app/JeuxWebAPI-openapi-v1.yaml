@@ -1,12 +1,8 @@
 ---
 openapi: 3.0.3
 info:
-  title: JeuxSonde API
-  description: "REST API for football leagues, tournaments, teams, and matches."
-  contact:
-    name: JeuxSonde Team
-    email: contact@example.com
-  version: 1.0.0
+  title: jeuxwebapi API
+  version: 1.0.0-SNAPSHOT
 paths:
   /api/q/v1/leagues:
     get:
