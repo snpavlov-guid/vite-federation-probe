@@ -69,3 +69,7 @@
 .diffHeaderCentered :global(.ag-header-cell-label) {
   justify-content: center;
 }
+
+.mHeaderCentered :global(.ag-header-cell-label) {
+  justify-content: center;
+}

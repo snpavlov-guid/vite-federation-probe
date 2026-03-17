@@ -15,6 +15,7 @@
 .gridShell {
   flex: 1;
   min-height: 0;
+  --ag-header-height: 24px;
   --ag-borders: none;
   --ag-borders-row: none;
   --ag-row-border-style: none;
@@ -53,35 +54,41 @@
   transition: transform 120ms ease;
   line-height: 1;
   position: relative;
-  top: 1px;
+  top: -5px;
 }
 
 .chevronIconExpanded {
   transform: rotate(90deg);
+  top: 1px;
 }
 
 .seasonCellLayout {
   display: grid;
   grid-template-columns: 24px 1fr;
-  align-items: start;
+  align-items: center;
   column-gap: 6px;
+}
+
+.seasonCellLayoutExpanded {
+  align-items: start;
 }
 
 .stageList {
   display: grid;
-  gap: 2px;
+  gap: 0;
 }
 
 .stageListItem {
   display: inline-block;
   padding-left: 0.25rem;
-  line-height: 1.25;
+  line-height: 1;
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
   margin: 0;
   text-decoration: none;
+  line-height: 1.7rem;
 }
 
 .stageListItem:hover {

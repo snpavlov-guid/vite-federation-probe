@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ColDef, GridApi, ICellRendererParams, RowHeightParams } from 'ag-grid-community';
+import type { ColDef, GridApi, ICellRendererParams } from 'ag-grid-community';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -16,9 +16,6 @@ import styles from './LeagueTournamentList.module.css';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const PAGE_SIZE = 50;
-const BASE_ROW_HEIGHT = 32;
-const getExpandedRowHeight = (stagesCount: number): number => Math.max(56, 30 + stagesCount * 22);
-
 interface LeagueTournamentListProps {
   onStageSelect?: (payload: {
     leagueId: number;
@@ -62,7 +59,6 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
     }
     api.refreshCells({ force: true });
     api.redrawRows();
-    api.resetRowHeights();
     api.onRowHeightChanged();
   }, [expandedTournamentIds]);
 
@@ -89,6 +85,7 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
       minWidth: 140,
       sortable: false,
       filter: false,
+      autoHeight: true,
       cellClass: styles.seasonCellHost,
       cellRenderer: (params: ICellRendererParams<LeagueTournament>) => {
         const row = params.data;
@@ -98,7 +95,9 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
         const isExpanded = expandedTournamentIds.has(row.id);
 
         return (
-          <div className={styles.seasonCellLayout}>
+          <div
+            className={`${styles.seasonCellLayout} ${isExpanded ? styles.seasonCellLayoutExpanded : ''}`.trim()}
+          >
             <button
               type="button"
               className={styles.chevronButton}
@@ -148,7 +147,7 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
                         });
                       }}
                     >
-                      • {stage.name}
+                      {stage.name}
                     </a>
                   ))}
                 </div>
@@ -164,25 +163,15 @@ export const LeagueTournamentList: React.FC<LeagueTournamentListProps> = ({ onSt
   const isPrevDisabled = page <= 1 || status === 'loading';
   const isNextDisabled = page >= totalPages || status === 'loading';
 
-  const getRowHeight = (params: RowHeightParams<LeagueTournament>): number => {
-    const row = params.data;
-    if (!row) {
-      return BASE_ROW_HEIGHT;
-    }
-    return expandedTournamentIds.has(row.id)
-      ? getExpandedRowHeight(row.stages.length)
-      : BASE_ROW_HEIGHT;
-  };
-
   return (
     <div className={styles.listRoot}>
       {status === 'failed' && <p className={styles.errorText}>Ошибка загрузки: {error ?? 'unknown'}</p>}
       <div className={`ag-theme-alpine ${styles.gridShell}`}>
         <AgGridReact<LeagueTournament>
+          theme="legacy"
           rowData={rows}
           columnDefs={columnDefs}
           getRowId={(params) => String(params.data.id)}
-          getRowHeight={getRowHeight}
           suppressCellFocus
           onGridReady={(params) => {
             gridApiRef.current = params.api;

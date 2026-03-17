@@ -58,8 +58,9 @@ export const LeagueStandingsTable: React.FC<LeagueStandingsTableProps> = ({
       {
         colId: 'scoredMissed',
         headerName: 'М',
-        width: 78,
+        width: 108,
         sortable: true,
+        headerClass: styles.mHeaderCentered,
         cellStyle: { textAlign: 'center' },
         valueGetter: (params) => `${params.data?.scored ?? 0}-${params.data?.missed ?? 0}`,
       },
@@ -97,14 +98,14 @@ export const LeagueStandingsTable: React.FC<LeagueStandingsTableProps> = ({
       {status === 'failed' && <p className={styles.errorText}>Ошибка загрузки таблицы: {error ?? 'unknown'}</p>}
       <div className={`ag-theme-alpine ${styles.gridShell}`}>
         <AgGridReact<StandingItem>
+          theme="legacy"
           rowData={rows}
           columnDefs={columnDefs}
           domLayout="autoHeight"
           rowModelType="clientSide"
-          rowSelection="single"
+          rowSelection={{ mode: 'singleRow', checkboxes: false, headerCheckbox: false, enableClickSelection: false }}
           animateRows
           suppressCellFocus
-          suppressRowClickSelection
           suppressMovableColumns
           onRowClicked={handleRowClick}
           overlayNoRowsTemplate={status === 'loading' ? 'Загрузка...' : 'Нет данных'}
