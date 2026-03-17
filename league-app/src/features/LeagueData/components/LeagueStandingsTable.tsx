@@ -103,7 +103,7 @@ export const LeagueStandingsTable: React.FC<LeagueStandingsTableProps> = ({
           columnDefs={columnDefs}
           domLayout="autoHeight"
           rowModelType="clientSide"
-          rowSelection={{ mode: 'singleRow', checkboxes: false, headerCheckbox: false, enableClickSelection: false }}
+          rowSelection={{ mode: 'singleRow', checkboxes: false, enableClickSelection: false }}
           animateRows
           suppressCellFocus
           suppressMovableColumns
