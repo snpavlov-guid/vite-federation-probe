@@ -1,0 +1,10 @@
+services:
+  vue-task-app:
+    container_name: vue-task-app
+    build:
+      context: ../..
+      dockerfile: vue-task-app/docker/Dockerfile
+      target: production
+    ports:
+      - "31023:80"
+    restart: unless-stopped
