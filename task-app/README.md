@@ -2,6 +2,35 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Docker
+
+Проект можно собрать и запустить в Docker через `docker compose`.
+
+### Build image
+
+```bash
+docker compose -f docker_compose/task-app-docker-compose.yml build
+```
+
+### Run container
+
+```bash
+docker compose -f docker_compose/task-app-docker-compose.yml up --build
+```
+
+Приложение будет доступно по адресу [http://localhost:31022](http://localhost:31022).
+
+### Stop container
+
+```bash
+docker compose -f docker_compose/task-app-docker-compose.yml down
+```
+
+### Notes
+
+- Compose использует `docker/Dockerfile` и multi-stage сборку (`build` + `production`).
+- Для runtime используется `nginx` с SPA fallback из `docker/nginx.conf`.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh

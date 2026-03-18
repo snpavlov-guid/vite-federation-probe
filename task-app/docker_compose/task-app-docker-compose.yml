@@ -1,0 +1,10 @@
+services:
+  task-app:
+    container_name: task-app
+    build:
+      context: ../..
+      dockerfile: task-app/docker/Dockerfile
+      target: production
+    ports:
+      - "31022:80"
+    restart: unless-stopped
