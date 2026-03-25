@@ -5,6 +5,10 @@ declare module 'task_app/TaskApp' {
     
 }
 
+declare module 'league_app/LeagueApp' {
+    export default function LeagueApp();
+}
+
 // types/vue-federation.d.ts
 declare module 'vue_task_app/VueTaskApp' {
   // import { Component } from 'vue';

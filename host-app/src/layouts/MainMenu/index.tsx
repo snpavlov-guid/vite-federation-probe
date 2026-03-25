@@ -32,7 +32,8 @@ export const MainMenu: React.FC<TopMenuProps> = ({
             createmenuItem('Главная', '/', { location, navigate }),
             createmenuItem('Приложение React', '/tasklistreact', { location, navigate }),
             createmenuItem('Приложение Vue', '/tasklistvue', { location, navigate }),
-            createmenuItem('Приложение Solid', '/tasklistsolid', { location, navigate }),
+            // createmenuItem('Приложение Solid', '/tasklistsolid', { location, navigate }),
+            createmenuItem('Приложение РПЛ', '/leagueapp', { location, navigate }),
         ],
         [navigate, location],
     );   

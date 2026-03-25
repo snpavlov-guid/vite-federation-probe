@@ -1,16 +1,13 @@
-html,
-body,
-#root {
+/* Scoped root: avoids global #app-root and leaking html/body/#root into the host. */
+.league-mfe-root {
+  box-sizing: border-box;
   width: 100%;
-  height: 100%;
-  margin: 0;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
 
-body {
-  display: block;
-}
 
-#app-root {
-  width: 100%;
-  height: 100%;
-}

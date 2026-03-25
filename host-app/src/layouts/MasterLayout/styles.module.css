@@ -1,11 +1,19 @@
 .app-wrapper {
-    min-height: 100%;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     position: relative;
 }
 
 .app-layout {
     --padding-bottom: 80px !important;
-    min-height: 100vh;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .app-header {
@@ -24,5 +32,9 @@
 .app-content {
     padding-left: 15px;
     padding-right: 15px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 

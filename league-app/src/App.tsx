@@ -1,34 +1,54 @@
-//import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import { Provider } from 'react-redux'
+import { store } from './app/store'
 import { LeaguePage } from './pages/LeaguePage'
+import { initAuth } from './features/Auth'
 
 function App() {
-  //const [count, setCount] = useState(0)
+  const [authReady, setAuthReady] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    void initAuth()
+      .then(() => {
+        if (!cancelled) setAuthReady(true)
+      })
+      .catch((error: unknown) => {
+        console.error('Auth bootstrap failed:', error)
+        if (!cancelled) {
+          setAuthError(
+            error instanceof Error ? error.message : 'Failed to initialize authentication.',
+          )
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  if (authError) {
+    return (
+      <div className="league-mfe-root" style={{ padding: '1rem' }}>
+        Ошибка авторизации: {authError}
+      </div>
+    )
+  }
+
+  if (!authReady) {
+    return (
+      <div className="league-mfe-root" style={{ padding: '1rem' }}>
+        Вход…
+      </div>
+    )
+  }
 
   return (
-    <div id="app-root">
-      {/* 
-        Лишние блоки шаблонного лейаута отключены, оставлен только рендер LeaguePage.
-        <div id="app-info">
-          <div>
-            <a href="https://vite.dev" target="_blank">
-               <img src={viteLogo} className="logo" alt="Vite logo" />
-            </a>
-            <a href="https://react.dev" target="_blank">
-              <img src={reactLogo} className="logo react" alt="React logo" />
-            </a>
-          </div>
-          <h2>Vite + React</h2>
-        </div>
-        <div id="app-league">
-          <div className="card">
-            <LeaguePage/>
-          </div>
-        </div>
-      */}
-      <LeaguePage />
+    <div className="league-mfe-root">
+      <Provider store={store}>
+        <LeaguePage />
+      </Provider>
     </div>
   )
 }

@@ -4,6 +4,9 @@ import federation from "@originjs/vite-plugin-federation";
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   plugins: [react(),
     federation({
       name: "league-app",
@@ -11,7 +14,8 @@ export default defineConfig({
       exposes: {
          "./LeagueApp": "./src/App",
       },
-      shared: ["react", "react-dom"],
+      // Как в task-app: иначе в remote остаются свои react-redux / RTK и хуки бьют не в тот React.
+      shared: ['react', 'react-dom', 'react-redux', '@reduxjs/toolkit'],
     }),
   ],
   build: {

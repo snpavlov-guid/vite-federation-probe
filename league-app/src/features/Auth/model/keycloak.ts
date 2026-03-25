@@ -7,7 +7,9 @@ export const keycloak = new Keycloak({
   clientId: authEnv.clientId,
 });
 
-export const initAuth = async (): Promise<void> => {
+let authInitPromise: Promise<void> | null = null;
+
+const runKeycloakInit = async (): Promise<void> => {
   const authenticated = await keycloak.init({
     onLoad: 'login-required',
     checkLoginIframe: false,
@@ -20,4 +22,12 @@ export const initAuth = async (): Promise<void> => {
 
   const tokenPayload = keycloak.tokenParsed ?? { token: keycloak.token };
   console.log('Auth token payload:', JSON.stringify(tokenPayload, null, 2));
+};
+
+/** Один раз на вкладку; безопасно при StrictMode и при загрузке только exposes (без main.tsx). */
+export const initAuth = async (): Promise<void> => {
+  if (!authInitPromise) {
+    authInitPromise = runKeycloakInit();
+  }
+  return authInitPromise;
 };

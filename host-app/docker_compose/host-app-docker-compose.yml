@@ -1,0 +1,18 @@
+# Подстановка ${VITE_*}: запускайте из каталога host-app:
+#   docker compose --env-file .env -f docker_compose/host-app-docker-compose.yml up --build
+services:
+  host-app:
+    container_name: host-app
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: production
+      args:
+        VITE_REMOTE_TASKAPPREACT_URL: ${VITE_REMOTE_TASKAPPREACT_URL}
+        VITE_REMOTE_TASKAPPVUE_URL: ${VITE_REMOTE_TASKAPPVUE_URL}
+        VITE_REMOTE_TASKAPPSOLID_URL: ${VITE_REMOTE_TASKAPPSOLID_URL}
+    env_file:
+      - ../.env
+    ports:
+      - "31030:80"
+    restart: unless-stopped
