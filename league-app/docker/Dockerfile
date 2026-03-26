@@ -5,6 +5,17 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
+# Baked into import.meta.env — required when league runs as a federated remote (host page never loads league's /env-config.js).
+ARG VITE_APP_AUTH_URL
+ARG VITE_APP_AUTH_REALM
+ARG VITE_APP_AUTH_CLIENTID
+ARG VITE_APP_FOOTBALL_APIURL
+
+ENV VITE_APP_AUTH_URL=$VITE_APP_AUTH_URL
+ENV VITE_APP_AUTH_REALM=$VITE_APP_AUTH_REALM
+ENV VITE_APP_AUTH_CLIENTID=$VITE_APP_AUTH_CLIENTID
+ENV VITE_APP_FOOTBALL_APIURL=$VITE_APP_FOOTBALL_APIURL
+
 COPY . .
 RUN npm run build
 

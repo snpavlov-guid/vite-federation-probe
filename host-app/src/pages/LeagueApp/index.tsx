@@ -3,6 +3,7 @@ import React from 'react';
 import { ComponentLoader } from '../../features/ComponentLoader';
 import { useNavigate } from 'react-router-dom';
 import { lazy } from 'react';
+
 const LeagueApp = lazy(() => import('league_app/LeagueApp'));
 
 interface ILeagueAppPageProps {

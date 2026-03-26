@@ -5,6 +5,11 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       target: production
+      args:
+        VITE_APP_AUTH_URL: ${VITE_APP_AUTH_URL:-http://keycloak-dev:8082/}
+        VITE_APP_AUTH_REALM: ${VITE_APP_AUTH_REALM:-probe-app}
+        VITE_APP_AUTH_CLIENTID: ${VITE_APP_AUTH_CLIENTID:-probe-app-client}
+        VITE_APP_FOOTBALL_APIURL: ${VITE_APP_FOOTBALL_APIURL:-http://localhost:19081/api/q/v1/}
     environment:
       VITE_APP_AUTH_URL: "http://keycloak-dev:8082/"
       VITE_APP_AUTH_REALM: "probe-app"

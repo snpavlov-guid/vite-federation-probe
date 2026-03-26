@@ -6,7 +6,7 @@ Learn more about the recommended Project Setup and IDE Support in the [Vue Docs 
 
 ## Docker
 
-Проект можно собрать и запустить в Docker через `docker compose`.
+Проект можно собрать и запустить в Docker через `docker compose`. Контекст сборки — **корень монорепозитория** (`context: ../..`), Dockerfile: `vue-task-app/docker/Dockerfile`.
 
 ### Build image
 
@@ -20,7 +20,7 @@ docker compose -f docker_compose/vue-task-app-docker-compose.yml build
 docker compose -f docker_compose/vue-task-app-docker-compose.yml up --build
 ```
 
-Приложение будет доступно по адресу [http://localhost:31023](http://localhost:31023).
+Приложение будет доступно по адресу [http://localhost:31023](http://localhost:31023) (порт задаётся в compose).
 
 ### Stop container
 
@@ -28,7 +28,15 @@ docker compose -f docker_compose/vue-task-app-docker-compose.yml up --build
 docker compose -f docker_compose/vue-task-app-docker-compose.yml down
 ```
 
+### nginx (`docker/nginx.conf`)
+
+- Раздача статики с SPA fallback на `index.html`.
+- Добавлены заголовки **CORS** для кросс-origin загрузки ES-модулей federation при прямом URL на порт приложения. При использовании только прокси host-app (`/mf/task-vue/`) достаточно same-origin.
+
+### Переменные окружения в контейнере
+
+Специальных `VITE_*` в Dockerfile по умолчанию нет; при необходимости задайте их через `ARG`/`ENV` до шага `npm run build`.
+
 ### Notes
 
-- Compose использует `docker/Dockerfile` и multi-stage сборку (`build` + `production`).
-- Для runtime используется `nginx` с SPA fallback из `docker/nginx.conf`.
+- Multi-stage: `build` + `production` (`nginx:alpine`).

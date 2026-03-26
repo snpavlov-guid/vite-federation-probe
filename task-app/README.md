@@ -4,7 +4,7 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 ## Docker
 
-Проект можно собрать и запустить в Docker через `docker compose`.
+Проект можно собрать и запустить в Docker через `docker compose`. Контекст сборки — **корень монорепозитория** (`context: ../..`), Dockerfile: `task-app/docker/Dockerfile`.
 
 ### Build image
 
@@ -18,7 +18,7 @@ docker compose -f docker_compose/task-app-docker-compose.yml build
 docker compose -f docker_compose/task-app-docker-compose.yml up --build
 ```
 
-Приложение будет доступно по адресу [http://localhost:31022](http://localhost:31022).
+Приложение будет доступно по адресу [http://localhost:31022](http://localhost:31022) (порт задаётся в compose).
 
 ### Stop container
 
@@ -26,73 +26,17 @@ docker compose -f docker_compose/task-app-docker-compose.yml up --build
 docker compose -f docker_compose/task-app-docker-compose.yml down
 ```
 
+### nginx (`docker/nginx.conf`)
+
+- Раздача статики из `/usr/share/nginx/html`, для SPA используется `try_files` с fallback на `index.html`.
+- Настроены заголовки **CORS** для JS/CSS: remote может запрашиваться с другого origin (например, с host при прямых URL). Если remote открывается только через **same-origin** прокси host-app (`/mf/task-react/`), CORS не нужен, но конфиг поддерживает оба варианта.
+
+### Переменные окружения в контейнере
+
+Отдельных `VITE_*` для task-app в образе не задано: при необходимости добавьте `ARG`/`ENV` перед `npm run build` в Dockerfile по аналогии с `league-app`.
+
 ### Notes
 
-- Compose использует `docker/Dockerfile` и multi-stage сборку (`build` + `production`).
-- Для runtime используется `nginx` с SPA fallback из `docker/nginx.conf`.
+- Multi-stage сборка: стадия `build` (Node) и `production` (`nginx:alpine`).
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Расширение ESLint (type-aware и React) — см. документацию [Vite](https://vite.dev/) и конфиги в репозитории.

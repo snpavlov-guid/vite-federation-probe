@@ -37,3 +37,7 @@ Check my post about this repository [here](https://victorlillo.dev/blog/react-ty
 | `build-storybook` | Build the Storybook `dist`.                                                        |
 |      `test`       | Run the tests with **Vitest** using `jsdom` and starts a **Vitest UI** dev server. |
 |    `coverage`     | Generate a coverage report, with **v8**.                                           |
+
+## Docker и nginx
+
+Пакет — **библиотека компонентов** и Storybook, отдельного контейнера или nginx-конфигурации в репозитории нет. При сборке приложений (например `task-app`) shared-пакет подключается на этапе `npm run build` в образе приложения.

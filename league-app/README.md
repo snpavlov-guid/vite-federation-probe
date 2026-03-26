@@ -54,10 +54,33 @@ npm run build
 - `build` стадия: `node:22-alpine`, установка зависимостей и `npm run build`;
 - `production` стадия: `nginx:alpine`, раздача статических файлов из `dist`.
 
-Собрать образ вручную:
+### Переменные `VITE_*` при сборке образа
+
+Перед `npm run build` в Dockerfile передаются `ARG` / `ENV`:
+
+- `VITE_APP_AUTH_URL`
+- `VITE_APP_AUTH_REALM`
+- `VITE_APP_AUTH_CLIENTID`
+- `VITE_APP_FOOTBALL_APIURL`
+
+Они попадают в **`import.meta.env`**. Это **обязательно**, если league подключается как **remote** в host: на странице хоста не выполняется `league-app` `/env-config.js`, поэтому runtime из контейнера league не подставляется в `window.app.env` для remote.
+
+В **`docker_compose/leaguage-docker-compose.yml`** те же значения задаются в секции **`build.args`** (с дефолтами через `${VAR:-...}`) и дублируются в **`environment`** для `app-env.sh` при автономном запуске.
+
+### nginx в контейнере (`docker/nginx.conf`)
+
+- Корень статики: `/usr/share/nginx/html`, SPA-fallback на `index.html`.
+- Для ответов со статикой добавлены заголовки **CORS** (`Access-Control-Allow-Origin` и др.): нужны, если remote открывают **напрямую** с другого порта (без прокси host). Если используете только **same-origin** прокси host (`/mf/league/`), CORS для браузера не требуется, но конфиг остаётся совместимым с обоими сценариями.
+
+Собрать образ вручную (передайте `ARG` или используйте compose):
 
 ```bash
-docker build -f docker/Dockerfile -t league-app:local .
+docker build -f docker/Dockerfile -t league-app:local \
+  --build-arg VITE_APP_AUTH_URL="http://keycloak-dev:8082/" \
+  --build-arg VITE_APP_AUTH_REALM="probe-app" \
+  --build-arg VITE_APP_AUTH_CLIENTID="probe-app-client" \
+  --build-arg VITE_APP_FOOTBALL_APIURL="http://localhost:19081/api/q/v1/" \
+  .
 ```
 
 Запустить контейнер вручную:
@@ -104,9 +127,9 @@ docker compose -f leaguage-docker-compose.yml down
 Перед стартом nginx скрипт:
 
 - считывает все переменные контейнера, начинающиеся с `VITE_`;
-- генерирует файл `/usr/share/nginx/html/env-config.js`.
+- генерирует файл `/usr/share/nginx/html/env-config.js` (подключается из `index.html` до основного бандла).
 
-Таким образом значения можно менять через `environment` в Docker Compose без пересборки frontend-кода.
+Таким образом значения можно менять через `environment` в Docker Compose **без пересборки** frontend-кода — но только при **прямом** открытии league (`http://localhost:31021`). В сценарии **Module Federation через host** приоритет у значений, **зашитых при сборке** (см. выше).
 
 ## Troubleshooting
 
