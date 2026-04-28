@@ -1,32 +1,28 @@
-// pages/TaskListSolidPage.tsx
 import React from 'react';
-// import { SolidWrapper } from '../../features/SolidWrapper'
-// import { ComponentLoader } from '../../features/ComponentLoader';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { SolidWrapper } from '../../features/SolidWrapper';
+import { ComponentLoader } from '../../features/ComponentLoader';
+import styles from './styles.module.css';
 
-// Интерфейс для пропсов компонента
 interface ITaskListSolidPageProps {
-    className?: string; // Дополнительные классы стилей
+  className?: string;
 }
 
-// Компонент редактора списка
 export const TaskListSolidPage: React.FC<ITaskListSolidPageProps> = ({
-    className = ''
+  className = '',
 }) => {
-    // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    // const resetMethod = function(details : any) {
-    //   console.info('Перезагрузка компонента TaskApp:', details);
-    //   // попытка перезагрузки страницы
-    //   navigate(0);     
-    // }
+  const resetMethod = () => {
+    navigate(0);
+  };
 
-    return (
-    <div className={`task-list ${className}`}>
-        <p>Todo list Solid</p>
-        {/* <ComponentLoader resetMethod={resetMethod} >
-          <SolidWrapper modulePathName='solid_task_app/SolidTaskApp' />
-        </ComponentLoader> */}
+  return (
+    <div className={`${styles.page} ${className}`}>
+      <h2 className={styles.pageHeading}>Solid Counter component</h2>
+      <ComponentLoader resetMethod={resetMethod}>
+        <SolidWrapper />
+      </ComponentLoader>
     </div>
   );
 };

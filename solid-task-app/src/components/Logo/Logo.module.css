@@ -1,0 +1,12 @@
+/* Глобальные классы — hover может примениться, если CSS файл подгрузился (необязательно для размера) */
+:global(img.srf-logo-vite):hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+:global(img.srf-logo-solid):hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.title {
+  margin: 0.5rem 0 0;
+}

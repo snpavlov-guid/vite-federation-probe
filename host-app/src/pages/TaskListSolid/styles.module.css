@@ -1,0 +1,13 @@
+/* Центрирование страницы — согласовано с удалённым .app-root, если его CSS недоступен в хосте */
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.pageHeading {
+  margin-top: 0;
+}

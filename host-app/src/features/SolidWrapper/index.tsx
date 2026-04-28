@@ -1,43 +1,49 @@
-//import styles from './styles.module.css'
-import React, { lazy } from 'react';
-import { convertToReactComponent } from 'react-solid-bridge';
+import React, { useEffect, useRef } from 'react';
+import type { Component } from 'solid-js';
+import styles from './styles.module.css';
 
-// Интерфейс для пропсов компонента
-interface ISolidWrapperProps {
-    modulePathName: string, 
-    className?: string; // Дополнительные классы стилей
-}
+/**
+ * Стили контейнера на стороне хоста нужны потому что CSS-modules remote-приложения
+ * (solid `.app-root`) часто не инжектятся в документ хоста — без них пропадают
+ * text-align / flex-колонка и блоки «едут» в разные стороны.
+ */
 
-// Компонент редактора списка
-export const SolidWrapper: React.FC<ISolidWrapperProps> = ({
-    modulePathName,
-    className = ''
-}) => {
+/** Mounts federated Solid app into a DOM node (no react-solid-bridge; avoids React internals). */
+export const SolidWrapper: React.FC<{ className?: string }> = ({ className = '' }) => {
+  const hostRef = useRef<HTMLDivElement>(null);
 
-    // Динамически загружаем модуль через Module Federation
-    const loadSolidJSModule = async () => {
-        try {
-            // @ts-ignore: Типы для удаленного модуля
-            const module = await import(modulePathName);
-            return module;
-        } catch (error) {
-            console.error(`Failed to load '${modulePathName}' module: ${error}`);
-            throw error;
-        }
+  useEffect(() => {
+    let dispose: (() => void) | undefined;
+    let cancelled = false;
+    const el = hostRef.current;
+    if (!el) return;
+
+    void (async () => {
+      try {
+        const [{ render }, mod] = await Promise.all([
+          import('solid-js/web'),
+          import('solid_task_app/SolidTaskApp'),
+        ]);
+        if (cancelled || hostRef.current !== el) return;
+
+        const SolidTaskApp = mod.default as Component;
+        dispose = render(() => SolidTaskApp({}), el);
+      } catch (e) {
+        console.error('[SolidWrapper] Federation mount failed:', e);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      dispose?.();
     };
+  }, []);
 
-    // Создаем lazy-компонент для загрузки SolidJS-модуля
-    const SolidJSComponentLazy = lazy(() => 
-            loadSolidJSModule().then(module => {
-            // Преобразуем SolidJS-компонент в React-компонент
-            const ReactSolidComponent = convertToReactComponent(module.default);
-            return { default: ReactSolidComponent };
-        })
-    );
-    
-    return (
-        <div className={`${className}`}>
-            <SolidJSComponentLazy />
-        </div>
-    );
+  return (
+    <div
+      ref={hostRef}
+      className={`${styles.host} ${className}`.trim()}
+      data-solid-remote-mount
+    />
+  );
 };

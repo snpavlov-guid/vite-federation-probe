@@ -20,10 +20,7 @@ declare module 'vue_task_app/VueTaskApp' {
 
 // types/remote.d.ts
 declare module 'solid_task_app/SolidTaskApp' {
-  const SolidTaskApp: React.ComponentType;
+  import type { Component } from 'solid-js';
+  const SolidTaskApp: Component;
   export default SolidTaskApp;
-}
-
-declare module 'react-solid-bridge' {
-  export function convertToReactComponent(component : any);
 }

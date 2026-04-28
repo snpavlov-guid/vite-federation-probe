@@ -26,8 +26,16 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
+  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+/* Оболочка standalone: содержимое центрирует .app-root внутри */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {

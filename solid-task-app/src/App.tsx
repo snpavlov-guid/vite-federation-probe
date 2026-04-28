@@ -1,7 +1,6 @@
 import Logo from './components/Logo'
 import Counter from './components/Counter'
-import styles from './app.module.css';
-import './App.css'
+import styles from './app.module.css'
 
 function App() {
 
