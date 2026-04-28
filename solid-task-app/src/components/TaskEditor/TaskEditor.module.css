@@ -1,0 +1,163 @@
+.inputForm {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 0.5em;
+}
+
+.inputFormGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  column-gap: 5px;
+}
+
+.inputFormInput {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  outline: none;
+  width: 100%;
+}
+
+.inputFormInput:focus {
+  border-color: #2196f3;
+}
+
+.inputFormInputError {
+  border-color: #f44336;
+}
+
+.inputFormInput:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.inputFormError {
+  color: #f44336;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.inputFormButton {
+  padding: 12px 24px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.inputFormButton:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+
+.inputFormButton:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.button:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.buttonSmall {
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.buttonMedium {
+  font-size: 1.1rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.buttonLarge {
+  font-size: 1.2rem;
+  padding: 0.8rem 1rem;
+}
+
+.itemList {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.itemList .empty {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.itemListContainer {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.itemListItem {
+  padding: 4px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.itemListItem:hover {
+  background-color: #f8f9fa;
+}
+
+.itemListItemSelected {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.itemListItemCompleted {
+  opacity: 0.7;
+}
+
+.itemListItem:last-child {
+  border-bottom: none;
+}
+
+.itemListContent {
+  flex: 1;
+}
+
+.itemListTitle {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+}
+
+.itemListDescription {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  text-align: left;
+}
+
+.itemListControl {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.itemListStatus {
+  color: #4caf50;
+  font-weight: bold;
+  width: 48px;
+  text-align: center;
+}

@@ -1,5 +1,5 @@
 import Logo from './components/Logo'
-import Counter from './components/Counter'
+import TaskEditor from './components/TaskEditor'
 import styles from './app.module.css'
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
   return (
     <div class={styles['app-root']}>
       <Logo />
-      <Counter />
+      <TaskEditor />
     </div>
   )
 }

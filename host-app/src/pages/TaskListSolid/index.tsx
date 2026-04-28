@@ -19,7 +19,7 @@ export const TaskListSolidPage: React.FC<ITaskListSolidPageProps> = ({
 
   return (
     <div className={`${styles.page} ${className}`}>
-      <h2 className={styles.pageHeading}>Solid Counter component</h2>
+      <h2 className={styles.pageHeading}>Список задач Solid</h2>
       <ComponentLoader resetMethod={resetMethod}>
         <SolidWrapper />
       </ComponentLoader>
