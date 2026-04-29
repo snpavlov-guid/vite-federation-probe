@@ -1,29 +1,91 @@
-## Usage
+# solid-task-app — SolidJS remote (Module Federation)
+
+Микрофронтенд на **SolidJS** + **Vite** и **[@originjs/vite-plugin-federation](https://github.com/originjs/vite-plugin-federation)**: при сборке публикуется **remote entry** (`solid-task-app-entry.js`), который **host-app** подгружает во время выполнения. Отдельно от приложения задаётся публичный CSS `assets/solid-remote-ui.css` (для встраивания в React-обёртке host через `SolidWrapper`).
+
+## Стек и роль в монорепозитории
+
+- **SolidJS** — UI репозитория задач во втором технологическом remote (рядом с React `task-app`, Vue `vue-task-app` и приложением РПЛ).
+- **TypeScript**, **vite-plugin-solid** — сборка и HMR как в типичном Vite-проекте.
+- **Совместимость с host**: в `host-app` указан ключ remote `solid_task_app`, модуль `./SolidTaskApp`; в `shared` участвует `solid-js` (версию держите согласованной с `host-app/package.json`).
+
+## Конфигурация Federation (`vite.config.ts`)
+
+Кратко:
+
+- **`filename`**: `solid-task-app-entry.js` (после базового URL: `assets/solid-task-app-entry.js`).
+- **`exposes`**: `./SolidTaskApp` → `./src/App`.
+- **`shared`**: `solid-js`.
+- **CSS**: сборка без `cssCodeSplit`, фиксированное имя `assets/solid-remote-ui.css`.
+
+Порты Vite задаются в этом же файле:
+
+- **`dev`**: по умолчанию **5176** (`server.port`).
+- **`preview`** (результат `vite build`): **4176** (`preview.port`).
+
+## Локальная разработка
 
 ```bash
-$ npm install # or pnpm install or yarn install
+cd solid-task-app
+npm ci       # или npm install
+npm run dev
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Открыть приложение: [http://localhost:5176](http://localhost:5176).
 
-## Available Scripts
+### Связка с host-app без Docker
 
-In the project directory, you can run:
+В корне **`host-app`** задайте базовый URL до этого remote с **завершающим слешем** (как для остальных `VITE_REMOTE_*`), например в `.env.development`:
 
-### `npm run dev`
+```env
+VITE_REMOTE_TASKAPPSOLID_URL=http://localhost:5176/
+```
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+Запустите `solid-task-app` на 5176 и **host-app** своим `npm run dev`. Учитывайте, что другой порт даст другой origin; при необходимости настройте CORS или работайте через один origin (как в Docker-прокси host).
 
-### `npm run build`
+### Сборка и превью production
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+```bash
+npm run build   # tsc -b && vite build, артефакты в dist/
+npm run preview # по умолчанию http://localhost:4176
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Для host укажите `VITE_REMOTE_TASKAPPSOLID_URL=http://localhost:4176/` (или свой порт после правки конфига).
 
-## Deployment
+## Docker
 
-Learn more about deploying your application with the [documentations](https://vite.dev/guide/static-deploy.html)
+Сборочный контекст — **корень монорепозитория** (`context: ../..`), образ описан в **`solid-task-app/docker/Dockerfile`**, nginx — **`solid-task-app/docker/nginx.conf`**. Multi-stage: Node (сборка) → `nginx:alpine` (статическая раздача, порт 80).
 
+### Сборка образа
+
+```bash
+docker compose -f solid-task-app/docker_compose/solid-task-app-docker-compose.yml build
+```
+
+(Команды выполняются из каталога `solid-task-app` или укажите путь относительно корня репозитория.)
+
+### Запуск контейнера
+
+```bash
+docker compose -f solid-task-app/docker_compose/solid-task-app-docker-compose.yml up --build
+```
+
+Приложение на хосте: [http://localhost:31024](http://localhost:31024).
+
+### Остановка
+
+```bash
+docker compose -f solid-task-app/docker_compose/solid-task-app-docker-compose.yml down
+```
+
+### nginx
+
+- SPA: статика из `/usr/share/nginx/html`, fallback `try_files` → `index.html`.
+- Заголовки **CORS** разрешают отдачу бандлов с другого origin (прямые запросы к remote). Если remote открывается только через **same-origin** прокси host (`/mf/task-solid/`), браузеру CORS из nginx не нужен — конфиг остаётся полезным при отладке напрямую по порту контейнера.
+
+### Переменные окружения при сборке образа
+
+Отдельных `VITE_*` в Dockerfile по умолчанию не задано; при необходимости добавьте `ARG`/`ENV` перед `npm run build` по аналогии с **`league-app`**.
+
+---
+
+Дополнительно о работе federation и Docker-сценарии для **host-app** см. [корневой README](../README.md) и [host-app/README](../host-app/README.md).

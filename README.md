@@ -1,11 +1,11 @@
 # Vite Module Federation — монорепозиторий
 
-Демонстрация **микрофронтендов** на [Vite](https://vite.dev/): одно shell-приложение (**host**) подгружает независимо собираемые **remote** (React, Vue, отдельное React-приложение РПЛ) через **Module Federation**.
+Демонстрация **микрофронтендов** на [Vite](https://vite.dev/): одно shell-приложение (**host**) подгружает независимо собираемые **remote** (React, Vue, SolidJS, отдельное React-приложение РПЛ) через **Module Federation**.
 
 ## Идея и принципы
 
 - **Host** не встраивает код remotes на этапе сборки целиком: в бандл попадают только **точки входа** remote (`*-entry.js`) и общая логика загрузчика federation. Реальные чанки remote подтягиваются **во время выполнения** по URL (динамический `import()`).
-- **Один экземпляр фреймворка** для связанных remotes: в конфигурации задаётся **`shared`** — общие зависимости (например `react` / `react-dom` / `react-redux` / `@reduxjs/toolkit` для React-remotes, `vue` для Vue). Так хуки и контекст Redux не «ломаются» между host и remote.
+- **Один экземпляр фреймворка** для связанных remotes: в конфигурации задаётся **`shared`** — общие зависимости (например `react` / `react-dom` / `react-redux` / `@reduxjs/toolkit` для React-remotes, `vue` для Vue, `solid-js` для Solid-remote). Так хуки и контекст Redux не «ломаются» между host и remote.
 - **Контракт** между приложениями: remote **экспортирует** (`exposes`) конкретные модули (корневой компонент приложения), host **импортирует** их по строковому идентификатору вида `remoteName/ExposedName`.
 - **Сборка** каждого приложения остаётся автономной (отдельный `vite build` и отдельный Docker-образ). Версии и порты remotes задаются на уровне **переменных окружения** при сборке host.
 
@@ -32,6 +32,7 @@
     | `league_app` | `VITE_REMOTE_LEAGUEAPP_URL` | `assets/league-app-entry.js` |
     | `task_app` | `VITE_REMOTE_TASKAPPREACT_URL` | `assets/task-app-entry.js` |
     | `vue_task_app` | `VITE_REMOTE_TASKAPPVUE_URL` | `assets/vue-task-app-entry.js` |
+    | `solid_task_app` | `VITE_REMOTE_TASKAPPSOLID_URL` | `assets/solid-task-app-entry.js` |
 
   - **`shared`**: список пакетов, которые разделяются между host и remotes (см. `package.json` host — зависимости должны быть согласованы по major с remote).
 
@@ -47,13 +48,14 @@
   - **`name`** — внутреннее имя контейнера federation (должно согласовываться с тем, как host ссылается на remote в импортах; на host используются ключи `remotes` выше).
   - **`filename`** — имя файла remote entry в каталоге `assets/` после сборки.
   - **`exposes`** — публичные модули (например `"./LeagueApp": "./src/App"`).
-  - **`shared`** — те же библиотеки, что и у host для данного стека (React + Redux для league/task-app, Vue для vue-task-app).
+  - **`shared`** — те же библиотеки, что и у host для данного стека (React + Redux для league/task-app, Vue для vue-task-app, **`solid-js`** для solid-task-app).
 
 Примеры в репозитории:
 
 - `league-app/vite.config.ts` — `league-app-entry.js`, exposes `./LeagueApp`, `dedupe` для React.
 - `task-app/vite.config.ts` — `task-app-entry.js`, exposes `./TaskApp`.
 - `vue-task-app/vite.config.ts` — `vue-task-app-entry.js`, exposes `./VueTaskApp`.
+- `solid-task-app/vite.config.ts` — `solid-task-app-entry.js`, exposes `./SolidTaskApp`, общий **`solid-js`**, фиксированный **`assets/solid-remote-ui.css`**.
 
 ## Импорты и типы
 
@@ -62,6 +64,7 @@
 - `league_app/LeagueApp`
 - `task_app/TaskApp`
 - `vue_task_app/VueTaskApp`
+- `solid_task_app/SolidTaskApp`
 
 Файлы: `host-app/src/types/index.d.ts` (и связанные декларации).
 
@@ -69,7 +72,7 @@
 
 - **Сборка host**: в `docker` и локально для production нужны **`VITE_REMOTE_*`** — полные базовые URL до remotes (в типичной схеме с **same-origin** прокси через nginx host — это `http://localhost:<порт-хоста>/mf/<путь>/...`, см. `host-app/.env.production`).
 
-- **Remotes в Docker**: статика раздаётся **nginx**; отдельные порты на хосте (`31021`–`31023`) и прокси в **host** (`nginx` + `host.docker.internal`) описаны в **`host-app/README.md`**.
+- **Remotes в Docker**: статика раздаётся **nginx**; отдельные порты на хосте (`31021`–`31024` для league / React-task / Vue-task / Solid-task) и прокси в **host** (`nginx` + `host.docker.internal`, в т.ч. `/mf/task-solid/` → `:31024`) описаны в **`host-app/README.md`**.
 
 - **League-app** при встраивании в host требует, чтобы чувствительные **`VITE_APP_*`** были доступны в **`import.meta.env`** при сборке образа (страница host не загружает `env-config.js` remote). Подробности — в **`league-app/README.md`**.
 
@@ -81,6 +84,7 @@
 | League (РПЛ) | `league-app/README.md` |
 | Task (React) | `task-app/README.md` |
 | Task (Vue) | `vue-task-app/README.md` |
+| Task (Solid) | `solid-task-app/README.md` |
 | Shared UI | `packages/shared-react-ui/README.md` |
 
 ## Локальная разработка без Docker
