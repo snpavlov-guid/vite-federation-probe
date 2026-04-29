@@ -1,0 +1,10 @@
+services:
+  solid-task-app:
+    container_name: solid-task-app
+    build:
+      context: ../..
+      dockerfile: solid-task-app/docker/Dockerfile
+      target: production
+    ports:
+      - "31024:80"
+    restart: unless-stopped
